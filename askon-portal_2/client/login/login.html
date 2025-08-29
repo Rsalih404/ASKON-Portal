@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ASKON Portal | Giriş</title>
+  <link rel="stylesheet" href="login.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body>
+  <div class="bg"></div>
+
+  <main class="card">
+    <div class="logo">
+      <i class="fa-solid fa-shield-halved"></i>
+      <span>ASKON PORTAL</span>
+    </div>
+    <br><br>
+    <h1>Giriş Yap</h1>
+    <br>
+
+    <form id="login-form" autocomplete="off">
+      <label>
+        <span>Kullanıcı Adı</span>
+        <input type="text" id="username" placeholder="mehmetyildiz123" required />
+      </label>
+
+      <label class="pw">
+        <span>Şifre</span>
+        <input type="password" id="password" placeholder="Şifreniz" required />
+        <button type="button" id="togglePw" class="icon-btn" aria-label="Şifreyi göster/gizle">
+          <i class="fa-regular fa-eye"></i>
+        </button>
+      </label>
+
+      <div id="capsWarning" class="caps" hidden>Caps Lock açık görünüyor</div>
+      <div id="err" class="error" style="min-height:20px;margin:6px 0;color:#ff9b9b;"></div>
+
+      <button type="submit" class="login-btn" id="loginBtn">
+        <span class="spinner" id="spinner" hidden></span>
+        Giriş
+      </button>
+    </form>
+
+    <footer>© <span id="yil"></span> Askon Portal</footer>
+  </main>
+
+  <script type="module">
+    // Live Server (5500) ile açıyorsan relative yol doğrudur.
+    import { setToken, api } from "../assets/app.js";
+    const $ = (q) => document.querySelector(q);
+    const form     = $("#login-form");
+    const userEl   = $("#username");
+    const passEl   = $("#password");
+    const btn      = $("#loginBtn");
+    const errEl    = $("#err");
+    const spinEl   = $("#spinner");
+    const capsEl   = $("#capsWarning");
+    const togglePw = $("#togglePw");
+
+    $("#yil").textContent = new Date().getFullYear();
+
+    function handleCaps(e){
+      if (!capsEl) return;
+      const on = e.getModifierState && e.getModifierState("CapsLock");
+      capsEl.hidden = !on;
+    }
+    passEl.addEventListener("keydown", handleCaps);
+    passEl.addEventListener("keyup", handleCaps);
+
+    togglePw.addEventListener("click", () => {
+      const isPw = passEl.type === "password";
+      passEl.type = isPw ? "text" : "password";
+      togglePw.querySelector("i").className = isPw ? "fa-regular fa-eye-slash" : "fa-regular fa-eye";
+    });
+
+    function showErr(msg=""){ if (errEl) errEl.textContent = msg; }
+    function busy(on){ btn.disabled = !!on; if (spinEl) spinEl.hidden = !on; }
+
+    async function doLogin(){
+      showErr(""); busy(true);
+      try{
+        const payload = { username: userEl.value.trim(), password: passEl.value };
+        if (!payload.username || !payload.password) throw new Error("Kullanıcı adı ve şifre zorunlu");
+        const { token } = await api("/api/auth/login", { method:"POST", body: JSON.stringify(payload) });
+        if (!token) throw new Error("Sunucudan token alınamadı");
+        setToken(token);
+        location.href = "/client/app/anasayfa.html";
+      }catch(e){ showErr(e.message || "Giriş başarısız"); }
+      finally{ busy(false); }
+    }
+
+    form.addEventListener("submit", (ev)=>{ ev.preventDefault(); doLogin(); });
+    btn.addEventListener("click",    (ev)=>{ ev.preventDefault(); doLogin(); });
+    [userEl, passEl].forEach(el => el.addEventListener("keydown", (ev)=>{ if (ev.key === "Enter") doLogin(); }));
+  </script>
+</body>
+</html>

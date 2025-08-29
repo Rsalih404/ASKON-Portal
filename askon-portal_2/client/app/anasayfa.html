@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>ASKON Portal | Ana Sayfa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%2338bdf8'/%3E%3C/svg%3E" />
+  <style>
+    :root{--bg:#0f172a;--panel:#0b1220;--border:#1f2937;--text:#e5e7eb;--muted:#94a3b8;--accent:#38bdf8;--accent-strong:#0ea5e9;--warnbg:#fff3cd;--warntext:#664d03;--ok:#16a34a;--danger:#ef4444}
+    *{box-sizing:border-box}html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial}
+    .layout{display:grid;height:100%;grid-template-columns:240px 1fr;grid-template-rows:56px 1fr;grid-template-areas:"top top" "side main"}
+    nav{grid-area:top;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border-bottom:1px solid var(--border)}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700}.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+    .nav-links a{color:var(--text);text-decoration:none;margin-right:12px;font-size:14px}.nav-links a:hover{text-decoration:underline}
+    .profile{display:flex;align-items:center;gap:12px}
+    .pill{background:var(--panel);border:1px solid var(--border);padding:6px 10px;border-radius:999px;font-size:12px;color:var(--muted);max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .logout{border:none;background:linear-gradient(180deg,var(--accent),var(--accent-strong));color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer}
+    .profile-box{display:flex;align-items:center;gap:10px;padding:6px 10px;background:var(--panel);border:1px solid var(--border);border-radius:12px;cursor:pointer;position:relative;min-width:180px;transition:transform .08s ease}
+    .profile-box:active{transform:scale(.98)}
+    .avatar{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#132034;color:#cbeaff;font-weight:700;border:1px solid #1f2b43}
+    .meta{display:flex;flex-direction:column;line-height:1.1}.meta .name{font-weight:600;font-size:13px;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta .sub{font-size:11px;color:var(--muted)}
+    .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(22,163,74,.8);animation:pulse 2s infinite;margin-left:auto}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.7)}70%{box-shadow:0 0 0 8px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
+    .coachmark{position:absolute;top:calc(100% + 8px);right:0;background:#0a1427;color:#cbeaff;border:1px solid #153055;padding:8px 10px;border-radius:10px;font-size:12px;white-space:nowrap;display:none}.coachmark.show{display:block}
+    aside{grid-area:side;background:var(--panel);border-right:1px solid var(--border);padding:12px;overflow:auto}
+    .side-group{margin-bottom:16px}.side-group h3{margin:10px 0;font-size:14px;color:var(--muted);cursor:pointer}
+    .side-group ul{list-style:none;margin:0;padding:0}.side-group li a{display:block;padding:8px 10px;border-radius:8px;color:var(--text);text-decoration:none}.side-group li a:hover{background:#0f172a}
+    main{grid-area:main;padding:14px;overflow:auto}
+    .banner{background:var(--warnbg);color:var(--warntext);border:1px solid #ffecb5;border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .btn{border:none;background:linear-gradient(180deg,var(--accent),var(--accent-strong));color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer}
+    .btn.ghost{background:#0b1220;border:1px solid var(--border);color:var(--text)}
+    .btn.danger{background:#3b1f1f;border:1px solid #5b2b2b;color:#ffb4b4}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);padding:20px;z-index:10}
+    .modal .content{width:min(92vw,520px);margin:6vh auto;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px}
+    .row{display:grid;gap:10px}
+    input,textarea,select{border-radius:10px;border:1px solid var(--border);background:#0f172a;color:var(--text);padding:10px 12px;width:100%}
+    input{height:40px}select{height:40px}
+    .split-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:1080px){.split-row{grid-template-columns:1fr}}
+    .two-col{display:grid;grid-template-columns:minmax(340px,400px) 1fr;gap:12px;align-items:start}@media (max-width:980px){.two-col{grid-template-columns:1fr}}
+    table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid var(--border);padding:8px 6px;font-size:14px}th{text-align:left;color:var(--muted);font-weight:600}
+    .docs-panel{min-height:120px;border:1px dashed var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--muted);background:#0f172a}
+    .progress-wrap{height:8px;background:#0f172a;border:1px solid var(--border);border-radius:999px;overflow:hidden}
+    .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-strong))}
+    .tag{font-size:12px;color:#94a3b8;border:1px solid var(--border);padding:2px 8px;border-radius:999px;background:#0b1220}
+  </style>
+</head>
+<body>
+<div class="layout">
+  <nav>
+    <div class="brand"><span class="dot"></span> ASKON PORTAL</div>
+    <div class="nav-links">
+      <a href="#" data-open="home">Ana Sayfa</a>
+      <a href="#" data-link="etkinlikler">Etkinlikler</a>
+      <a href="#" data-link="duyurular">Duyurular</a>
+      <a href="https://askon.com.tr" target="_blank" rel="noopener">Web</a>
+    </div>
+    <div class="profile">
+      <span id="userDept" class="pill">—</span><span id="userStatus" class="pill">—</span>
+      <div id="profileBox" class="profile-box" role="button" tabindex="0" aria-label="Profilim">
+        <div class="avatar"><span id="avatarInitials">—</span></div>
+        <div class="meta"><div id="profileName" class="name">—</div><div class="sub">Profilim</div></div>
+        <span class="pulse-dot" aria-hidden="true"></span>
+        <div id="coachmark" class="coachmark" role="note">Profilini düzenlemek için tıkla</div>
+      </div>
+      <button id="logoutBtn" class="logout">Çıkış</button>
+    </div>
+  </nav>
+
+  <aside>
+    <div class="side-group" data-roles="stajyer,personel,admin">
+      <h3>Oryantasyon</h3>
+      <ul>
+        <li><a href="#" data-view="oryantasyon-genel">Genel Bilgiler</a></li>
+        <li><a href="#" data-view="oryantasyon-egitimler">Eğitimler</a></li>
+        <li><a href="#" data-view="oryantasyon-belgeler">Belgeler</a></li>
+        <li><a href="#" data-view="oryantasyon-odevler">Ödevler</a></li>
+      </ul>
+    </div>
+
+    <div class="side-group" data-roles="stajyer">
+      <h3>Staj Süreci</h3>
+      <ul>
+        <li><a href="#" data-open="stj-genel">Genel Bilgiler</a></li>
+        <li><a href="#" data-open="stj-sorumluluklar">Sorumluluklar</a></li>
+        <li><a href="#" data-open="stj-ornprojeler">Örnek Projeler</a></li>
+        <li><a href="#" data-open="stj-projelerim">Projelerim</a></li>
+        <li><a href="#" data-open="stj-pusulam">Pusulam</a></li>
+      </ul>
+    </div>
+
+    <div class="side-group" data-roles="personel">
+      <h3>Personel</h3>
+      <ul>
+        <li><a href="#" data-open="prs-ik">İK Duyuruları</a></li>
+        <li><a href="#" data-open="prs-belgeler">Personel Belgeleri</a></li>
+      </ul>
+    </div>
+
+    <div class="side-group" data-roles="admin">
+      <h3>Yönetim</h3>
+      <ul>
+        <li><a href="#" data-open="adm-egitim-ekle">Eğitim Yükle</a></li>
+        <li><a href="#" data-open="adm-belge-ekle">Belge Yükle</a></li>
+        <li><a href="#" data-open="adm-cms">CMS Sayfaları</a></li>
+      </ul>
+    </div>
+
+    <div class="side-group" data-roles="admin">
+      <h3>Kullanıcı İşlemleri</h3>
+      <ul>
+        <li><a href="#" data-open="adm-users">Kullanıcı Ekleme - Çıkarma</a></li>
+        <li><a href="#" data-open="adm-users-view">Kullanıcı Görüntüle</a></li>
+      </ul>
+    </div>
+
+    <div class="side-group" data-statusdetail="superadmin">
+      <h3>Süper Admin</h3>
+      <ul><li><a href="#" data-open="sap-ayarlar">Sistem Ayarları</a></li></ul>
+    </div>
+  </aside>
+
+  <main>
+    <div id="pwdBanner" class="banner" style="display:none">
+      <div><strong>Güvenlik:</strong> İlk giriş şifresiyle oturumu açtınız. Lütfen <strong>şifrenizi değiştirin</strong>.</div>
+      <button id="openPwd" class="btn">Şifreyi Değiştir</button>
+    </div>
+
+    <section id="home" class="card">
+      <h2>Hoş geldiniz</h2>
+      <p>Soldaki menüden bölümleri gezebilir; sağ üstteki profil kutusuna tıklayarak profilinizi düzenleyebilirsiniz.</p>
+    </section>
+
+    <!-- Oryantasyon -->
+    <section id="ory-genel" class="card" hidden><h3>Oryantasyon - Genel Bilgiler</h3></section>
+    <section id="ory-egitimler" class="card" hidden><h3>Oryantasyon - Eğitimler</h3></section>
+    <section id="ory-belgeler" class="card" hidden><h3>Oryantasyon - Belgeler</h3></section>
+    <section id="ory-odevler" class="card" hidden><h3>Oryantasyon - Ödevler</h3></section>
+
+    <!-- Staj -->
+    <section id="stj-genel" class="card" hidden><h3>Staj - Genel Bilgiler</h3></section>
+    <section id="stj-sorumluluklar" class="card" hidden><h3>Staj - Sorumluluklar</h3></section>
+    <section id="stj-ornprojeler" class="card" hidden><h3>Staj - Örnek Projeler</h3></section>
+    <section id="stj-projelerim" class="card" hidden><h3>Staj - Projelerim</h3></section>
+    <section id="stj-pusulam" class="card" hidden><h3>Staj - Pusulam</h3></section>
+
+    <!-- Personel -->
+    <section id="prs-ik" class="card" hidden><h3>Personel - İK Duyuruları</h3></section>
+    <section id="prs-belgeler" class="card" hidden><h3>Personel - Belgeler</h3></section>
+
+    <!-- Yönetim -->
+    <section id="adm-egitim-ekle" class="card" hidden><h3>Yönetim - Eğitim Yükle</h3></section>
+    <section id="adm-belge-ekle" class="card" hidden><h3>Yönetim - Belge Yükle</h3></section>
+    <section id="adm-cms" class="card" hidden><h3>Yönetim - CMS Sayfaları</h3></section>
+
+    <!-- Admin: Kullanıcı Ekleme - Çıkarma -->
+    <section id="adm-users" class="card" hidden>
+      <h3>Kullanıcı Ekleme - Çıkarma</h3>
+      <div class="card" style="margin:10px 0">
+        <div style="display:grid;gap:8px;grid-template-columns:1fr 220px 180px 160px 1fr">
+          <input id="usrQ" placeholder="Ara: ad, soyad veya kullanıcı adı" />
+          <select id="usrDeptF">
+            <option value="">Tüm departmanlar</option>
+            <option>Sac İşleme İmalat</option><option>Kalite Kontrol</option><option>İş Güvenliği</option>
+            <option>Proje Ve Kaynaklı İmalat</option><option>Arge Ve Mühendislik</option><option>Kaynaklı İmalat Kalite Kontrol</option>
+            <option>Satış Pazarlama</option><option>Satın Alma</option><option>Planlama Ve Lojistik</option><option>Muhasebe</option>
+            <option>Finans ve Bütçe</option><option>İnsan Kaynakları</option><option>Sürdürülebilirlik</option><option>Kurumsal İletişim</option>
+            <option>Bilgi Sistemleri</option><option>Bakım Onarım</option><option>Yapı İşleri</option>
+          </select>
+          <select id="usrRoleF">
+            <option value="">Tüm statüler</option>
+            <option value="superadmin">superadmin</option><option value="admin">admin</option>
+            <option value="personel">personel</option><option value="stajyer">stajyer</option>
+          </select>
+          <select id="usrPTypeF">
+            <option value="">Personel türü</option>
+            <option value="mavi">mavi yaka</option><option value="beyaz">beyaz yaka</option>
+          </select>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button id="usrSearchBtn" class="btn">Ara</button>
+            <button id="usrClearBtn" class="btn ghost">Temizle</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col" style="margin-top:10px">
+        <form id="userAddForm" class="card" style="margin:0">
+          <div style="font-weight:600;margin-bottom:8px">Yeni Kullanıcı</div>
+          <div class="row" style="grid-template-columns:1fr 1fr">
+            <div><label>İsim</label><input id="uFirstName" required /></div>
+            <div><label>Soy İsim</label><input id="uLastName" required /></div>
+            <div><label>TC (11 hane)</label>
+              <input id="uTC" inputmode="numeric" maxlength="11" pattern="^\d{11}$" required
+                     oninput="this.value=this.value.replace(/\D/g,'').slice(0,11)"/>
+            </div>
+            <div>
+              <label>Departman</label>
+              <select id="uDept" required>
+                <option value="">Seçin…</option>
+                <option>Sac İşleme İmalat</option><option>Kalite Kontrol</option><option>İş Güvenliği</option>
+                <option>Proje Ve Kaynaklı İmalat</option><option>Arge Ve Mühendislik</option><option>Kaynaklı İmalat Kalite Kontrol</option>
+                <option>Satış Pazarlama</option><option>Satın Alma</option><option>Planlama Ve Lojistik</option><option>Muhasebe</option>
+                <option>Finans ve Bütçe</option><option>İnsan Kaynakları</option><option>Sürdürülebilirlik</option><option>Kurumsal İletişim</option>
+                <option>Bilgi Sistemleri</option><option>Bakım Onarım</option><option>Yapı İşleri</option>
+              </select>
+            </div>
+            <div>
+              <label>Statü</label>
+              <select id="uRole" required>
+                <option value="">Seçin…</option>
+                <option value="superadmin">superadmin</option><option value="admin">admin</option>
+                <option value="personel">personel</option><option value="stajyer">stajyer</option>
+              </select>
+            </div>
+            <div id="uPersonelTypeWrap" hidden>
+              <label>Personel Türü</label>
+              <select id="uPersonelType">
+                <option value="">—</option><option value="mavi">mavi yaka</option><option value="beyaz">beyaz yaka</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <button type="submit" class="btn">Kaydet</button>
+            <button type="button" id="userAddReset" class="btn ghost">Temizle</button>
+          </div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:8px">
+            Başlangıç şifresi: <strong>AsKoN!2025!</strong> — ilk girişte değiştirilecek.
+          </div>
+        </form>
+
+        <div class="card" style="margin:0">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:600">Sonuçlar <span id="usrCount" style="color:#94a3b8;font-weight:400"></span></div>
+            <button id="userListRefresh" class="btn ghost">Yenile</button>
+          </div>
+          <div style="overflow:auto;margin-top:8px">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ad</th><th>Soyad</th><th>Kullanıcı</th><th>Departman</th><th>Statü</th><th>Tür</th>
+                  <th style="width:1%">Sil</th>
+                </tr>
+              </thead>
+              <tbody id="userListBody">
+                <tr><td colspan="7" style="color:#94a3b8">Liste yükleniyor…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Admin: Kullanıcı Görüntüle -->
+    <section id="adm-users-view" class="card" hidden>
+      <h3>Kullanıcı Görüntüle</h3>
+
+      <!-- Filtre -->
+      <div class="card" style="margin:10px 0">
+        <div style="display:grid;gap:8px;grid-template-columns:1fr 220px 180px 1fr">
+          <input id="viewUsrQ" placeholder="Ad / Soyad / Kullanıcı adı"/>
+          <select id="viewUsrDeptF">
+            <option value="">Tüm departmanlar</option>
+            <option>Sac İşleme İmalat</option><option>Kalite Kontrol</option><option>İş Güvenliği</option>
+            <option>Proje Ve Kaynaklı İmalat</option><option>Arge Ve Mühendislik</option><option>Kaynaklı İmalat Kalite Kontrol</option>
+            <option>Satış Pazarlama</option><option>Satın Alma</option><option>Planlama Ve Lojistik</option><option>Muhasebe</option>
+            <option>Finans ve Bütçe</option><option>İnsan Kaynakları</option><option>Sürdürülebilirlik</option><option>Kurumsal İletişim</option>
+            <option>Bilgi Sistemleri</option><option>Bakım Onarım</option><option>Yapı İşleri</option>
+          </select>
+          <select id="viewUsrRoleF">
+            <option value="">Tüm statüler</option>
+            <option value="superadmin">superadmin</option><option value="admin">admin</option>
+            <option value="personel">personel</option><option value="stajyer">stajyer</option>
+          </select>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button id="viewUsrSearchBtn" class="btn">Ara</button>
+            <button id="viewUsrClearBtn" class="btn ghost">Temizle</button>
+            <button id="viewUsrRefreshBtn" class="btn ghost">Yenile</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Liste -->
+      <div id="usrViewList" class="card" style="margin:10px 0">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:600">Kullanıcılar <span id="viewUsrCount" style="color:#94a3b8;font-weight:400"></span></div>
+        </div>
+        <div style="overflow:auto;margin-top:8px">
+          <table>
+            <thead>
+              <tr><th>Ad</th><th>Soyad</th><th>Departman</th><th>Statü</th></tr>
+            </thead>
+            <tbody id="viewUsersBody">
+              <tr><td colspan="4" style="color:#94a3b8">Yükleniyor…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:6px">Bir satıra tıklayarak detayları görüntüleyin.</div>
+      </div>
+
+      <!-- Detay -->
+      <div id="usrViewDetail" class="card" style="display:none;margin:10px 0">
+        <div style="display:flex;align-items:center;gap:8px;justify-content:space-between">
+          <div style="font-weight:600" id="vuHeader">Profil</div>
+          <div style="display:flex;gap:8px">
+            <button id="viewBackBtn" class="btn ghost" type="button">← Listeye Dön</button>
+          </div>
+        </div>
+
+        <div class="split-row" style="margin-top:10px">
+          <section class="card" style="margin:0">
+            <div class="summary-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div style="background:#0f172a;border:1px solid #1f2937;border-radius:12px;padding:12px"><div style="font-size:12px;color:#94a3b8">Ad</div><input id="vuFirst" disabled/></div>
+              <div style="background:#0f172a;border:1px solid #1f2937;border-radius:12px;padding:12px"><div style="font-size:12px;color:#94a3b8">Soyad</div><input id="vuLast" disabled/></div>
+              <div style="background:#0f172a;border:1px solid #1f2937;border-radius:12px;padding:12px"><div style="font-size:12px;color:#94a3b8">Departman</div><input id="vuDept" disabled/></div>
+              <div style="background:#0f172a;border:1px solid #1f2937;border-radius:12px;padding:12px"><div style="font-size:12px;color:#94a3b8">Statü</div><input id="vuRole" disabled/></div>
+            </div>
+
+            <div style="display:grid;gap:12px;margin-top:12px">
+              <div><div style="font-size:12px;color:#94a3b8">Doğum Tarihi</div><input id="vuBirth" disabled/></div>
+              <div><div style="font-size:12px;color:#94a3b8">Adres</div><input id="vuAddr" disabled/></div>
+              <div><div style="font-size:12px;color:#94a3b8">Telefon</div><input id="vuPhone" disabled/></div>
+              <div><div style="font-size:12px;color:#94a3b8">Hakkında</div><textarea id="vuAbout" rows="4" disabled></textarea></div>
+            </div>
+          </section>
+
+          <section class="card" style="margin:0">
+            <h4 style="margin:0 0 10px 0">Belgeleri</h4>
+            <div id="vuDocs" class="docs-panel">Yükleniyor…</div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section id="sap-ayarlar" class="card" hidden><h3>Süper Admin - Sistem Ayarları</h3></section>
+
+    <!-- PROFİL + BELGELER (me) -->
+    <div class="split-row" id="profileRow">
+      <section id="profil" class="card" hidden>
+        <h3>Profilim</h3>
+        <p style="color:#94a3b8;margin-top:6px">Ad, Soyad ve Statü alanları sistem tarafından yönetilir. Buradan
+          <strong>Doğum Tarihi</strong>, <strong>Adres</strong>, <strong>E-posta</strong> ve <strong>Telefon</strong> bilgilerinizi güncelleyebilirsiniz.</p>
+
+        <div class="about">
+          <div style="font-weight:600;margin-bottom:6px;">Hakkımda</div>
+          <textarea id="pfAbout" rows="5" maxlength="500" placeholder="Kısaca kendinizi tanıtın (örn. Merhaba, ben ...)"></textarea>
+          <div class="muted" style="color:#94a3b8;font-size:12px">En fazla 500 karakter.</div>
+        </div>
+
+        <div class="profile-grid" style="margin-top:12px;">
+          <div class="summary-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="background:#0f172a;border:1px solid #1f2937;border-radius:12px;padding:12px"><div style="font-size:12px;color:#94a3b8">Ad</div><input id="pfFirstName" disabled/></div>
+            <div style="background:#0f172a;border:1px solid #1f2937;border-radius:12px;padding:12px"><div style="font-size:12px;color:#94a3b8">Soyad</div><input id="pfLastName" disabled/></div>
+            <div style="background:#0f172a;border:1px solid #1f2937;border-radius:12px;padding:12px"><div style="font-size:12px;color:#94a3b8">Departman</div><input id="pfDepartment" disabled/></div>
+            <div style="background:#0f172a;border:1px solid #1f2937;border-radius:12px;padding:12px"><div style="font-size:12px;color:#94a3b8">Statü</div><input id="pfStatus" disabled/></div>
+          </div>
+
+          <form id="profileForm" style="display:grid;gap:12px;margin-top:12px">
+            <div><div style="font-size:12px;color:#94a3b8">Doğum Tarihi</div><input id="pfBirthDate" type="date"/></div>
+            <div><div style="font-size:12px;color:#94a3b8">Adres</div><input id="pfAddress" placeholder="Adresiniz"/></div>
+            <div>
+              <div style="font-size:12px;color:#94a3b8">Telefon</div>
+              <input id="pfPhone" name="phone" type="tel" inputmode="tel"
+                maxlength="20" required
+                pattern="^(?:\+?90|0)?\s*\d{3}\s*[- ]?\s*\d{3}\s*[- ]?\s*\d{2}\s*[- ]?\s*\d{2}$"
+                title="Örnek: 0532 000 00 00, 5320000000, +90 532 000 00 00"/>
+            </div>
+            <div>
+              <div style="font-size:12px;color:#94a3b8">E-posta</div>
+              <input id="pfEmail" type="email" inputmode="email" autocomplete="email"
+                placeholder="ornek@firma.com" required
+                pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                title="Geçerli bir e-posta adresi girin"/>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <button type="submit" class="btn">Kaydet</button>
+              <button type="button" id="pfReset" class="btn ghost">Sıfırla</button>
+              <button type="button" id="openPwdProfile" class="btn" style="margin-left:auto">Şifreyi Değiştir</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section id="belgelerim" class="card" hidden>
+        <h3>Belgelerim</h3>
+
+        <!-- YÜKLEME -->
+        <div class="card" style="margin:10px 0">
+          <div class="row" style="grid-template-columns:1fr 220px 1fr">
+            <div><input id="docTitle" placeholder="Belge adı (zorunlu)" aria-required="true"/></div>
+            <select id="docCategory">
+              <option value="">Kategori (opsiyonel)</option>
+              <option>Kimlik</option><option>Sözleşme</option><option>Eğitim Sertifikası</option>
+              <option>Rapor</option><option>Diğer</option>
+            </select>
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+              <input type="file" id="docFile" hidden/>
+              <button id="docChoose" class="btn ghost" type="button">Dosya Seç</button>
+              <button id="docUpload" class="btn" type="button">Yükle</button>
+            </div>
+          </div>
+
+          <div id="dropzone" class="docs-panel" style="margin-top:10px">
+            Dosyayı buraya sürükleyip bırakın ya da <strong>Dosya Seç</strong>’e tıklayın.
+          </div>
+
+          <div id="uploadBox" style="display:none;margin-top:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <span id="uploadLabel" class="tag">Yükleniyor…</span>
+              <span id="uploadPct" class="tag">0%</span>
+            </div>
+            <div class="progress-wrap"><div id="uploadBar" class="progress-bar"></div></div>
+          </div>
+        </div>
+
+        <!-- LİSTE & FİLTRE -->
+        <div class="card" style="margin:10px 0">
+          <div style="display:flex;gap:8px;align-items:center;justify-content:space-between">
+            <div style="display:flex;gap:8px;flex:1">
+              <input id="docsSearch" placeholder="Belge adı / uzantı ara" />
+              <select id="docsType" style="max-width:180px">
+                <option value="">Tür: Tümü</option>
+                <option value="image">Görsel</option>
+                <option value="pdf">PDF</option>
+                <option value="doc">Word</option>
+                <option value="xls">Excel</option>
+                <option value="ppt">PowerPoint</option>
+                <option value="txt">Metin</option>
+                <option value="other">Diğer</option>
+              </select>
+            </div>
+            <button id="docsRefresh" class="btn ghost">Yenile</button>
+          </div>
+
+          <div id="docs-list" style="margin-top:8px;overflow:auto">
+            <div class="docs-panel">Henüz bir belge yok.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div id="pwdModal" class="modal">
+  <div class="content">
+    <h3>Şifrenizi Değiştirin</h3>
+    <div class="row" style="margin-top:10px">
+      <input type="password" id="pwCurrent" placeholder="Mevcut şifre"/>
+      <input type="password" id="pwNew" placeholder="Yeni şifre (min 6)"/>
+      <input type="password" id="pwNew2" placeholder="Yeni şifre (tekrar)"/>
+      <button id="pwSave" class="btn">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ===== API ===== */
+const API =  "http://127.0.0.1:5000";
+const PROFILE_URL     = `${API}/api/users/profile`;
+const CHANGE_PW_URL   = `${API}/api/auth/change-password`;
+const DOCUMENTS_URL   = `${API}/api/documents`;
+const ADMIN_USERS_URL = `${API}/api/admin/users`;
+
+/* ===== Helpers ===== */
+const $  = (q)=>document.querySelector(q);
+const $$ = (q)=>document.querySelectorAll(q);
+const show=(el)=>{if(el)el.hidden=false};
+const hide=(el)=>{if(el)el.hidden=true};
+const openModal =(el)=>{if(el)el.style.display="block"};
+const closeModal=(el)=>{if(el)el.style.display="none"};
+const setVal =(sel,val)=>{const el=$(sel); if(el) el.value=val};
+const setText=(sel,val)=>{const el=$(sel); if(el) el.textContent=val};
+
+/* Türkçe karakterleri ASCII'ye çevirip güvenli kullanıcı adı üret */
+function toAsciiTR(str=""){
+  const map={ "ı":"i","İ":"i","ğ":"g","Ğ":"g","ş":"s","Ş":"s","ç":"c","Ç":"c","ö":"o","Ö":"o","ü":"u","Ü":"u" };
+  return String(str).split("").map(ch=>map[ch] ?? ch).join("")
+           .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
+/* Türkçesiz güvenli kullanıcı adı: ad+soyad + TC son 3 hane */
+function buildUsername(first, last, tc="") {
+  const base  = toAsciiTR(`${first}${last}`).replace(/[^A-Za-z0-9]/g, "").toLowerCase();
+  const last3 = String(tc).replace(/\D/g, "").slice(-3); // sadece son 3 hane
+  if (!base) return `user${last3 || Math.floor(100 + Math.random() * 900)}`;
+  return `${base}${last3}`;
+}
+
+
+/* tarih alanını <input type=date> uyumlu formata çevir */
+function toInputDate(value){
+  if(!value) return "";
+  const d=new Date(value);
+  if(Number.isNaN(d.getTime())) return "";
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function bytesToSize(n){
+  if(n===0) return "0 B";
+  if(!n && n!==0) return "";
+  const k=1024,s=["B","KB","MB","GB","TB"];
+  const i=Math.floor(Math.log(n)/Math.log(k));
+  return parseFloat((n/Math.pow(k,i)).toFixed(1))+" "+s[i];
+}
+function absoluteUrl(u){
+  if(!u) return "#";
+  if(/^https?:\/\//i.test(u)) return u;
+  if(u.startsWith("/")) return API+u;
+  return API+"/"+u.replace(/^\.?\//,"");
+}
+function formatDateTR(s){
+  if(!s) return "";
+  const d=new Date(s);
+  if(isNaN(+d)) return "";
+  // TR formatı, kısa tarih + kısa saat
+  return d.toLocaleString("tr-TR", { dateStyle:"short", timeStyle:"short" });
+}
+function ensureProfileVisible(){
+  const row=document.getElementById("profileRow");
+  if(row) row.hidden=false;
+  document.getElementById("profil")?.removeAttribute("hidden");
+  document.getElementById("belgelerim")?.removeAttribute("hidden");
+  document.getElementById("profil")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+const DROP_DEFAULT = "Dosyayı buraya sürükleyip bırakın ya da <strong>Dosya Seç</strong>’e tıklayın.";
+function setDropzoneMessage(msg){ const dz=$("#dropzone"); if(dz) dz.innerHTML=msg; }
+function resetDropzone(){ setDropzoneMessage(DROP_DEFAULT); }
+
+async function safeJson(url, opt={}){ try{ const r=await fetch(url,opt); if(!r.ok) return null; return await r.json(); }catch{ return null; } }
+const pick = (obj, keys)=> keys.reduce((v,k)=> v ?? obj?.[k], undefined);
+
+/* ===== Token ===== */
+const token = localStorage.getItem("token");
+if(!token){ location.href="../login/login.html"; }
+
+/* ===== Section show/hide ===== */
+function hideProfileGroup(){
+  const row=document.getElementById("profileRow");
+  if(row) row.hidden=true;
+  const p=document.getElementById("profil");
+  const b=document.getElementById("belgelerim");
+  if(p) p.hidden=true; if(b) b.hidden=true;
+}
+function hideAllSections(){
+  document.querySelectorAll("main > section.card").forEach(el=> el.hidden=true);
+  hideProfileGroup();
+}
+function showSection(id){
+  hideAllSections();
+  if(id==="profil" || id==="belgelerim" || id==="profile"){
+    const row=document.getElementById("profileRow");
+    if(row) row.hidden=false;
+    show(document.getElementById("profil"));
+    show(document.getElementById("belgelerim"));
+    loadDocuments();
+    document.getElementById("profil")?.scrollIntoView({behavior:"smooth",block:"start"});
+    return;
+  }
+  const target=document.getElementById(id);
+  if(target) target.hidden=false;
+  if(id==="adm-users"){ loadAdminUsers(currentFilterFromUI()); }
+  if(id==="adm-users-view"){ loadViewUsers(); }
+  target?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+["dragenter","dragover","drop"].forEach(evt=>{
+  document.addEventListener(evt, (e)=>{ e.preventDefault(); e.stopPropagation(); }, false);
+});
+
+/* ===== Init ===== */
+document.addEventListener("DOMContentLoaded", async () => {
+
+  hideAllSections(); show($("#home"));
+
+  /* sol menü */
+  $$("[data-open]").forEach(a=>{
+    a.addEventListener("click",(e)=>{ e.preventDefault(); showSection(a.getAttribute("data-open")); });
+  });
+
+  // Üst menüde SPA davranışı: gerçek gezintiyi kapat
+document.querySelectorAll('.nav-links a[data-link]').forEach(a=>{
+  a.addEventListener('click', (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    const sec = a.getAttribute('data-link');
+    if (sec) showSection(sec);
+  });
+});
+
+  /* çıkış */
+  $("#logoutBtn")?.addEventListener("click", ()=>{
+    if(confirm("Çıkış yapmak istiyor musunuz?")){
+      localStorage.removeItem("token");
+      location.href="../login/login.html";
+    }
+  });
+
+  /* şifre değiştir */
+  $("#openPwd")?.addEventListener("click", ()=>openModal($("#pwdModal")));
+  $("#openPwdProfile")?.addEventListener("click", ()=>openModal($("#pwdModal")));
+  $("#pwSave")?.addEventListener("click", async ()=>{
+    const current=$("#pwCurrent")?.value.trim();
+    const n1=$("#pwNew")?.value.trim();
+    const n2=$("#pwNew2")?.value.trim();
+    if(!current||!n1) return alert("Alanları doldurun.");
+    if(n1.length<6) return alert("Yeni şifre en az 6 karakter olmalı.");
+    if(n1!==n2) return alert("Yeni şifreler eşleşmiyor.");
+    const r=await fetch(CHANGE_PW_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json",Authorization:`Bearer ${token}`},
+      body:JSON.stringify({currentPassword:current,newPassword:n1})
+    });
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) return alert(d.message||"Şifre değiştirilemedi.");
+    closeModal($("#pwdModal"));
+    $("#pwdBanner").style.display="none";
+    alert("Şifreniz güncellendi.");
+  });
+
+  /* profil GET */
+  async function refreshMyProfile(){
+    try{
+      const res = await fetch(PROFILE_URL,{headers:{Authorization:`Bearer ${token}`}});
+      if(res.status===401){
+        alert("Oturum süresi dolmuş. Lütfen tekrar giriş yapın.");
+        localStorage.removeItem("token");
+        location.href="../login/login.html";
+        return;
+      }
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const u = await res.json();
+
+      const fullName=`${u.name??u.firstName??""} ${u.surname??u.lastName??""}`.trim();
+      const initials=((fullName.split(" ")[0]?.[0]||"")+(fullName.split(" ").slice(-1)[0]?.[0]||"")).toUpperCase()||"•";
+      setText("#profileName", fullName||"—");
+      setText("#avatarInitials", initials);
+      setText("#userDept", u.departman||u.department||"-");
+
+      const rawStatus=String(u.status||u.role||"").toLowerCase();
+      const normStatus=rawStatus.startsWith("personel_")?"personel":rawStatus;
+      setText("#userStatus", rawStatus||"-");
+
+      if(u.mustChangePassword){ $("#pwdBanner").style.display="flex"; }
+      applyVisibility(normStatus);
+
+      setVal("#pfFirstName",u.name||u.firstName||"");
+      setVal("#pfLastName",u.surname||u.lastName||"");
+      setVal("#pfDepartment",u.departman||u.department||"");
+      setVal("#pfStatus",rawStatus||"");
+      setVal("#pfBirthDate",toInputDate(u.birthDate));
+      setVal("#pfAddress",u.address||"");
+      setVal("#pfPhone",u.phone||"");
+      setVal("#pfAbout", u.about || "");
+      setVal("#pfEmail", u.email || "");
+
+      if(["admin","superadmin"].includes(normStatus)) loadAdminUsers(currentFilterFromUI());
+    }catch(e){ console.error("Profil yükleme hatası:", e); }
+  }
+  await refreshMyProfile();
+
+  /* profil kaydet */
+  $("#profileForm")?.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const payload = {
+      birthDate: $("#pfBirthDate")?.value || null,
+      address  : $("#pfAddress")?.value?.trim() || "",
+      phone    : $("#pfPhone")?.value?.trim() || "",
+      about    : $("#pfAbout")?.value?.trim() || "",
+      email    : $("#pfEmail")?.value?.trim() || ""
+    };
+    try{
+      const r = await fetch(PROFILE_URL, {
+        method: "PUT",
+        headers: {"Content-Type":"application/json", Authorization:`Bearer ${token}`},
+        body: JSON.stringify(payload)
+      });
+      const d = await r.json().catch(()=>({}));
+      if(!r.ok) return alert(d.message || "Kaydetme başarısız.");
+      alert("Profil güncellendi.");
+      await refreshMyProfile();
+    }catch(err){ console.error(err); alert("Profil güncellenemedi."); }
+  });
+
+  $("#pfReset")?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  $("#profileForm")?.reset();   // form inputlarını temizle
+  // sunucudaki son veriyi yeniden çek
+  // (refreshMyProfile DOMContentLoaded içinde tanımlı)
+  typeof refreshMyProfile === "function" && refreshMyProfile();
+});
+
+
+  /* profil kutusu tıklama */
+  function openProfileSection(){
+    hideAllSections();
+    const row=document.getElementById("profileRow"); if(row) row.hidden=false;
+    show($("#profil")); show($("#belgelerim"));
+    $("#coachmark") && ($("#coachmark").style.display="none");
+    localStorage.setItem("profileCoachmarkSeen","1");
+    $("#profil")?.scrollIntoView({behavior:"smooth",block:"start"});
+    loadDocuments();
+  }
+  $("#profileBox")?.addEventListener("click", openProfileSection);
+  $("#profileBox")?.addEventListener("keydown",(e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openProfileSection(); } });
+
+  /* Kullanıcı Ekleme: rol → personel türü alanı görünürlük */
+  $("#uRole")?.addEventListener("change", ()=>{
+    const wrap=$("#uPersonelTypeWrap");
+    if(!wrap) return;
+    wrap.hidden = ($("#uRole").value!=="personel");
+    if(wrap.hidden) $("#uPersonelType").value="";
+  });
+
+  /* Kullanıcı Ekleme: form submit — tek & sağlam handler */
+  const userAddForm = $("#userAddForm");
+  function resetUserAddForm(){
+    $("#uFirstName").value = "";
+    $("#uLastName").value  = "";
+    $("#uTC").value        = "";
+    $("#uDept").value      = "";
+    $("#uRole").value      = "";
+    $("#uPersonelType").value = "";
+    $("#uPersonelTypeWrap").hidden = true;
+  }
+  $("#userAddReset")?.addEventListener("click", resetUserAddForm);
+
+  if(userAddForm){
+    userAddForm.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+
+      const firstName    = ($("#uFirstName").value || "").trim();
+      const lastName     = ($("#uLastName").value  || "").trim();
+      const tc           = ($("#uTC").value        || "").trim();
+      const department   = $("#uDept").value || "";
+      const role         = $("#uRole").value || "";
+      const personelType = $("#uPersonelType").value || "";
+
+      if (!firstName || !lastName || !tc || !role) {
+        alert("İsim, Soyisim, TC ve Statü zorunludur.");
+        return;
+      }
+      if (!/^\d{11}$/.test(tc)) {
+        alert("TC 11 haneli olmalıdır.");
+        $("#uTC").focus();
+        return;
+      }
+
+      // Türkçesiz, güvenli kullanıcı adı
+      let username = buildUsername(firstName, lastName, tc);
+
+      const btn = userAddForm.querySelector('button[type="submit"]');
+      const old = btn.textContent;
+      btn.disabled = true; btn.textContent = "Kaydediliyor…";
+
+      // Sunucunun beklediği alanlar (tcNo) + opsiyonel username
+      const basePayload = {
+        firstName,
+        lastName,
+        department,
+        role,
+        tcNo: tc
+      };
+      if (role === "personel" && personelType) basePayload.personelType = personelType;
+
+      // 409 kullanıcı adı çakışmasına karşı 3 deneme
+      let tries = 0, created = false;
+      while (tries < 3 && !created) {
+        const payload = { ...basePayload, username };
+        try {
+          const resp = await fetch(ADMIN_USERS_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify(payload),
+          });
+          const data = await resp.json().catch(() => ({}));
+
+          if (resp.status === 409 && /user.?name/i.test(data.message || "")) {
+            // kullanıcı adı çakıştı → yeni suffix dene
+            username = `${username}${Math.floor(100 + Math.random() * 900)}`;
+            tries++;
+            continue;
+          }
+          if (!resp.ok) {
+            alert(data.message || "Kullanıcı oluşturulamadı.");
+            break;
+          }
+          created = true;
+        } catch (err) {
+          console.error(err);
+          alert("Ağ hatası: Kullanıcı oluşturulamadı.");
+          break;
+        }
+      }
+
+      if (created) {
+        alert("Kullanıcı oluşturuldu.");
+        resetUserAddForm();
+        if (typeof loadAdminUsers === "function") {
+          loadAdminUsers({ q: "", department: "", role: "", personelType: "" });
+        }
+      }
+
+      btn.disabled = false; btn.textContent = old;
+    });
+  }
+
+  /* Admin liste filtreleri */
+  $("#userListRefresh")?.addEventListener("click", ()=> loadAdminUsers(currentFilterFromUI()));
+  $("#usrSearchBtn")?.addEventListener("click", ()=> loadAdminUsers(currentFilterFromUI()));
+  $("#usrClearBtn")?.addEventListener("click", ()=>{
+    ["#usrQ","#usrDeptF","#usrRoleF","#usrPTypeF"].forEach(s=>{ const el=$(s); if(el) el.value=""; });
+    loadAdminUsers({q:"",department:"",role:"",personelType:""});
+  });
+  $("#usrQ")?.addEventListener("keydown",(e)=>{ if(e.key==="Enter"){ e.preventDefault(); $("#usrSearchBtn")?.click(); } });
+  ["#usrDeptF","#usrRoleF","#usrPTypeF"].forEach(s=> $(s)?.addEventListener("change", ()=> $("#usrSearchBtn")?.click()));
+
+  /* ===== Belgeler (me) UI ===== */
+$("#docTitle")?.addEventListener("input", ()=>{ 
+  $("#docTitle").style.borderColor=""; 
+  $("#docTitleErr")?.remove(); 
+});
+
+$("#docChoose")?.addEventListener("click", (e) => {
+  e.preventDefault(); e.stopPropagation();
+  $("#docFile")?.click();
+  return false;
+});
+
+$("#docUpload")?.addEventListener("click", (e) => {
+  e.preventDefault(); e.stopPropagation();
+  tryUploadSelected();
+  return false;
+});
+
+/* <-- EKSİK OLAN KISIM buydu */
+$("#docFile")?.addEventListener("change", (e) => {
+  const files = e.target.files;
+  if(!files || !files.length){ resetDropzone(); return; }
+  if(files.length===1){
+    setDropzoneMessage(`Seçilen: <strong>${files[0].name}</strong>`);
+  }else{
+    setDropzoneMessage(`<strong>${files.length}</strong> dosya seçildi`);
+  }
+});
+
+/* sürükle-bırak varsayılanları engelle */
+["dragover","drop"].forEach(evt=>{
+  document.addEventListener(evt, (e)=>{ e.preventDefault(); e.stopPropagation(); }, false);
+});
+
+const dz = $("#dropzone");
+if(dz){
+  ["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev, e=>{
+    e.preventDefault(); e.stopPropagation();
+    dz.style.borderColor="#3b82f6"; dz.style.color="#cbeaff";
+  }));
+  ["dragleave","drop"].forEach(ev=>dz.addEventListener(ev, e=>{
+    e.preventDefault(); e.stopPropagation();
+    dz.style.borderColor="var(--border)"; dz.style.color="var(--muted)";
+  }));
+  dz.addEventListener("drop", (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    const files = e.dataTransfer?.files;
+    if(!files || !files.length) return;
+
+    const dt = new DataTransfer();
+    for(const f of files){ dt.items.add(f); }
+    const input = document.getElementById("docFile");
+    if(input){ input.files = dt.files; }
+
+    if(files.length===1){
+      setDropzoneMessage(`Seçilen: <strong>${files[0].name}</strong>`);
+    }else{
+      setDropzoneMessage(`<strong>${files.length}</strong> dosya seçildi`);
+    }
+  });
+}
+
+$("#docsRefresh")?.addEventListener("click", (e)=>{ e.preventDefault(); loadDocuments(); });
+$("#docsSearch")?.addEventListener("input", ()=> renderDocsTable(filterDocs()));
+$("#docsType")?.addEventListener("change", ()=> renderDocsTable(filterDocs()));
+
+
+  /* Kullanıcı Görüntüle: eventler */
+  $("#viewUsrSearchBtn")?.addEventListener("click", ()=> renderUserListTable(applyUserViewFilters()));
+  $("#viewUsrClearBtn")?.addEventListener("click", ()=>{
+    ["#viewUsrQ","#viewUsrDeptF","#viewUsrRoleF"].forEach(s=>{ const el=$(s); if(el) el.value=""; });
+    renderUserListTable(VIEW_USERS_CACHE);
+  });
+  $("#viewUsrRefreshBtn")?.addEventListener("click", ()=> loadViewUsers());
+  $("#viewUsrQ")?.addEventListener("keydown",(e)=>{ if(e.key==="Enter"){ e.preventDefault(); $("#viewUsrSearchBtn")?.click(); } });
+  ["#viewUsrDeptF","#viewUsrRoleF"].forEach(s=> $(s)?.addEventListener("change", ()=> $("#viewUsrSearchBtn")?.click()));
+
+  // "Kullanıcı Görüntüle" listesinde satıra tıklama
+  document.addEventListener("click", (e)=>{
+    const row = e.target.closest("#viewUsersBody tr[data-id]");
+    if(row){
+      const id = row.getAttribute("data-id");
+      openUserDetail(id);
+    }
+  });
+
+  // detay -> geri
+  $("#viewBackBtn")?.addEventListener("click", ()=>{
+    $("#usrViewDetail").style.display="none";
+    $("#usrViewList").style.display="block";
+  });
+
+});
+/* ===== Visibility by role ===== */
+function applyVisibility(status){
+  $$("[data-roles]").forEach(el=>{
+    const roles=el.getAttribute("data-roles").split(",").map(s=>s.trim());
+    const visible = roles.includes(status) || (status==="superadmin" && roles.includes("admin"));
+    el.style.display = visible ? "" : "none";
+  });
+  $$("[data-statusdetail]").forEach(el=>{
+    const needed=el.getAttribute("data-statusdetail").trim();
+    el.style.display=(needed===status)?"":"none";
+  });
+}
+
+/* ===== Admin helpers (ekleme/çıkarma sayfası) ===== */
+function currentFilterFromUI(){
+  const qEl=$("#usrQ"), dEl=$("#usrDeptF"), rEl=$("#usrRoleF"), pEl=$("#usrPTypeF");
+  return {
+    q:(qEl?.value||"").trim(),
+    department:dEl?.value||"",
+    role:rEl?.value||"",
+    personelType:pEl?.value||""
+  };
+}
+async function loadAdminUsers(filters={}){
+  const bodyEl=$("#userListBody");
+  const countEl=$("#usrCount");
+  if(!bodyEl) return;
+  const clean=Object.fromEntries(
+    Object.entries({...filters,limit:100})
+      .filter(([_,v])=>v!==""&&v!==null&&v!==undefined)
+  );
+  try{
+    bodyEl.innerHTML=`<tr><td colspan="7" style="color:#94a3b8">Yükleniyor…</td></tr>`;
+    const qs=new URLSearchParams(clean).toString();
+    const r=await fetch(`${ADMIN_USERS_URL}?${qs}`,{headers:{Authorization:`Bearer ${token}`}});
+    const d=await r.json().catch(()=>({items:[]}));
+    const items=d.items||[];
+    if(countEl) countEl.textContent=`(${d.total ?? items.length} kayıt)`;
+    if(!items.length){
+      bodyEl.innerHTML=`<tr><td colspan="7" style="color:#94a3b8">Kayıt bulunamadı.</td></tr>`;
+      return;
+    }
+    const frag=document.createDocumentFragment();
+    items.forEach(u=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML=`
+        <td>${u.firstName||""}</td>
+        <td>${u.lastName||""}</td>
+        <td>${u.username||"-"}</td>
+        <td>${u.department||"-"}</td>
+        <td>${u.role||"-"}</td>
+        <td>${u.personelType||"-"}</td>
+        <td><button class="btn danger" data-del="${u._id||u.id||""}">Sil</button></td>`;
+      frag.appendChild(tr);
+    });
+    bodyEl.innerHTML="";
+    bodyEl.appendChild(frag);
+  }catch(e){
+    console.error(e);
+    bodyEl.innerHTML=`<tr><td colspan="7">Liste getirilemedi.</td></tr>`;
+  }
+}
+// kullanıcı silme
+document.addEventListener("click", async (e)=>{
+  const del=e.target.closest("button[data-del]");
+  if(del){
+    const id=del.getAttribute("data-del");
+    if(!id) return;
+    if(!confirm("Bu kullanıcıyı sistemden KALICI olarak silmek istiyor musunuz?")) return;
+    const r=await fetch(`${ADMIN_USERS_URL}/${id}`,{method:"DELETE",headers:{Authorization:`Bearer ${token}`}});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) return alert(d.message||"Silinemedi");
+    del.closest("tr")?.remove();
+  }
+});
+
+/* ===== Belgeler (me) ===== */
+let DOCS_CACHE = [];
+function renderDocsTable(items = []) {
+  const host = $("#docs-list");
+  if (!host) return;
+  if (!items.length) {
+    host.innerHTML = `<div class="docs-panel">Henüz bir belge yok.</div>`;
+    return;
+  }
+  const rows = items.map(x=>{
+    const name = x.title || x.file?.originalName || x.originalName || "Belge";
+    const size = bytesToSize(x.file?.size ?? x.size ?? 0);
+    const when = formatDateTR(x.createdAt || x.updatedAt);
+    const fileUrl = absoluteUrl(x.file?.url || x.url || "#");
+    const id   = x._id || x.id || "";
+    const dlUrl = id ? `${DOCUMENTS_URL}/${id}/download` : fileUrl;
+    const cat  = x.category || "-";
+    return `
+      <tr>
+        <td style="max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</td>
+        <td>${size}</td>
+        <td>${when||"-"}</td>
+        <td>${cat}</td>
+        <td style="white-space:nowrap;display:flex;gap:6px">
+          <button class="btn ghost" data-doc-open="${id}" data-doc-url="${dlUrl}" data-doc-fallback="${fileUrl}" data-doc-name="${name}">Aç / İndir</button>
+          <button class="btn" data-doc-rename="${id}">Yeniden Adlandır</button>
+          <button class="btn danger" data-doc-del="${id}">Sil</button>
+        </td>
+      </tr>`;
+  }).join("");
+
+  host.innerHTML = `
+    <div style="overflow:auto">
+      <table>
+        <thead>
+          <tr><th>Ad</th><th>Boyut</th><th>Tarih</th><th>Kategori</th><th style="width:1%">İşlem</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+function filterDocs(){
+  const q = ($("#docsSearch")?.value||"").trim().toLowerCase();
+  const t = $("#docsType")?.value||"";
+  return DOCS_CACHE.filter(d=>{
+    const name = (d.title || d.file?.originalName || d.originalName || "").toLowerCase();
+    const matchQ = !q || name.includes(q);
+    return matchQ && (!t || t==="other" || name.endsWith(`.${t}`) || (d.file?.mimetype||"").includes(t));
+  });
+}
+async function loadDocuments(){
+  const panel = $("#docs-list");
+  if(panel) panel.innerHTML = `<div class="docs-panel">Yükleniyor…</div>`;
+  try{
+    const r = await fetch(DOCUMENTS_URL, { headers:{ Authorization:`Bearer ${token}` }});
+    if (r.status === 401) {
+      alert("Oturum süresi dolmuş. Lütfen tekrar giriş yapın.");
+      localStorage.removeItem("token");
+      location.href = "../login/login.html";
+      return;
+    }
+    const d = await r.json().catch(()=>({ items:[] }));
+    const items = Array.isArray(d) ? d : (d.items || []);
+    DOCS_CACHE = items.sort((a,b)=> new Date(b.createdAt||0) - new Date(a.createdAt||0));
+    renderDocsTable(filterDocs());
+  }catch(err){
+    console.error("Belgeler getirilemedi:", err);
+    if(panel) panel.innerHTML = `<div class="docs-panel" style="color:#ffb4b4">Belge listesi getirilemedi.</div>`;
+  }
+}
+// seçileni yükle
+function tryUploadSelected(){
+  const input = $("#docFile");
+  const files = input?.files;
+  const title = ($("#docTitle")?.value||"").trim();
+  if(!files || !files.length) return alert("Yüklenecek dosyayı seçin veya sürükleyin.");
+  if(!title){
+    const t = $("#docTitle");
+    if(t){ t.style.borderColor="#ef4444"; t.focus(); }
+    let h=$("#docTitleErr");
+    if(!h){ h=document.createElement("div"); h.id="docTitleErr"; h.style.cssText="color:#ffb4b4;font-size:12px;margin-top:6px"; t.parentElement.appendChild(h); }
+    h.textContent="Başlık zorunlu.";
+    ensureProfileVisible();
+    return false;   // <-- sadece bu
+  }
+  (async ()=>{
+    for(let i=0;i<files.length;i++){ await uploadFile(files[i], title); }
+    if(input) input.value = "";
+    resetDropzone();
+  })();
+}
+
+function uploadFile(file, providedTitle){
+  return new Promise((resolve)=>{
+    const title = (providedTitle ?? "").trim();
+    const category = $("#docCategory")?.value||"";
+    const form = new FormData();
+    form.append("file", file);
+    form.append("title", title);
+    if(category) form.append("category", category);
+
+    const bar=$("#uploadBar"), box=$("#uploadBox"), pct=$("#uploadPct"), lbl=$("#uploadLabel");
+    if(box){ box.style.display="block"; }
+    if(lbl){ lbl.textContent = `Yükleniyor: ${file.name}`; }
+    if(bar) bar.style.width = "0%"; if(pct) pct.textContent = "0%";
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", DOCUMENTS_URL, true);
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.upload.onprogress = (e)=>{
+      if(!e.lengthComputable) return;
+      const p = Math.round((e.loaded/e.total)*100);
+      if(bar) bar.style.width = p+"%";
+      if(pct) pct.textContent = p+"%";
+    };
+    xhr.onload = ()=>{
+      if(xhr.status>=200 && xhr.status<300){
+        if(bar) bar.style.width="100%";
+        setTimeout(()=>{
+          if(box) box.style.display="none";
+          if(bar) bar.style.width="0%";
+          if(pct) pct.textContent="0%";
+        },500);
+        loadDocuments();
+        ensureProfileVisible();
+        resolve(true);
+      } else {
+        let msg="Yükleme başarısız.";
+        try{ const resp=JSON.parse(xhr.responseText); if(resp?.message) msg=resp.message; }catch{}
+        alert(msg);
+        if(box) box.style.display="none";
+        resolve(false);
+      }
+    };
+    xhr.onerror = ()=>{
+      alert("Ağ hatası: Yükleme yapılamadı.");
+      if(box) box.style.display="none";
+      resolve(false);
+    };
+    xhr.send(form);
+  });
+}
+// indir (auth)
+async function downloadWithAuth(url, filename="belge"){
+  const full = url && url.startsWith("http") ? url : absoluteUrl(url);
+  const r = await fetch(full, { headers:{ Authorization:`Bearer ${token}` }});
+  if(!r.ok) throw new Error("download failed");
+  const blob = await r.blob();
+  const blobUrl = URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href = blobUrl; a.download = filename || "belge";
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(blobUrl); a.remove(); }, 0);
+}
+
+/* ===== Admin: Kullanıcı Görüntüle ===== */
+let VIEW_USERS_CACHE = [];
+function currentViewFilterFromUI(){
+  return {
+    q: ($("#viewUsrQ")?.value||"").trim().toLowerCase(),
+    department: $("#viewUsrDeptF")?.value||"",
+    role: $("#viewUsrRoleF")?.value||""
+  };
+}
+function applyUserViewFilters(){
+  const {q,department,role} = currentViewFilterFromUI();
+  return VIEW_USERS_CACHE.filter(u=>{
+    const name = `${u.firstName||""} ${u.lastName||""} ${u.username||""}`.toLowerCase();
+    const okQ = !q || name.includes(q);
+    const okD = !department || (u.department===department);
+    const okR = !role || (u.role===role);
+    return okQ && okD && okR;
+  });
+}
+function renderUserListTable(list){
+  const body = $("#viewUsersBody");
+  const count= $("#viewUsrCount");
+  if(!body) return;
+  if(count) count.textContent = `(${list.length} kayıt)`;
+  if(!list.length){
+    body.innerHTML = `<tr><td colspan="4" style="color:#94a3b8">Kayıt bulunamadı.</td></tr>`;
+    return;
+  }
+  body.innerHTML = list.map(u=>`
+    <tr data-id="${u._id||u.id||""}" style="cursor:pointer">
+      <td>${u.firstName||""}</td>
+      <td>${u.lastName||""}</td>
+      <td>${u.department||"-"}</td>
+      <td>${u.role||"-"}</td>
+    </tr>
+  `).join("");
+}
+async function loadViewUsers(){
+  const body=$("#viewUsersBody");
+  if(body) body.innerHTML=`<tr><td colspan="4" style="color:#94a3b8">Yükleniyor…</td></tr>`;
+  try{
+    const qs = new URLSearchParams({limit:500}).toString();
+    const r = await fetch(`${ADMIN_USERS_URL}?${qs}`, { headers:{ Authorization:`Bearer ${token}` }});
+    const d = await r.json().catch(()=>({items:[]}));
+    VIEW_USERS_CACHE = d.items || [];
+    renderUserListTable(VIEW_USERS_CACHE);
+  }catch(e){
+    console.error(e);
+    if(body) body.innerHTML = `<tr><td colspan="4" style="color:#ffb4b4">Liste getirilemedi.</td></tr>`;
+  }
+}
+
+/* Kullanıcı ayrıntı alanlarını doldur */
+function fillUserView(u){
+  setVal("#vuFirst",  pick(u, ["firstName","name","ad"]) || "");
+  setVal("#vuLast",   pick(u, ["lastName","surname","soyad"]) || "");
+  setVal("#vuDept",   pick(u, ["department","departman"]) || "");
+  setVal("#vuRole",   pick(u, ["role","status","statu"]) || "");
+  const birth = pick(u, ["birthDate","birth_date","dogumTarihi","dogum_tarihi"]);
+  setVal("#vuBirth",  toInputDate(birth));
+  setVal("#vuAddr",   pick(u, ["address","adres"]) || "");
+  setVal("#vuPhone",  pick(u, ["phone","telefon"]) || "");
+  setVal("#vuAbout",  pick(u, ["about","bio","hakkinda"]) || "");
+}
+
+/* Doc owner tespiti ve filtre */
+function normId(v){
+  if(!v) return null;
+  if(typeof v === "string") return v;
+  if(typeof v === "object") return v._id || v.id || v.userId || v.ownerId || v.toString?.() || null;
+  return null;
+}
+function docOwnerId(doc){
+  return normId(doc.user)
+      || normId(doc.owner)
+      || normId(doc.uploader)
+      || normId(doc.createdBy)
+      || normId(doc.userId)
+      || normId(doc.ownerId)
+      || normId(doc.file?.user)
+      || normId(doc.file?.owner)
+      || normId(doc.file?.userId);
+}
+function filterDocsByOwner(items, userId){
+  const uid = String(userId||"");
+  return (items||[]).filter(x=> String(docOwnerId(x)||"") === uid);
+}
+
+async function fetchUserDocuments(userId){
+  // 1) admin endpoint
+  try{
+    const r = await fetch(`${ADMIN_USERS_URL}/${userId}/documents`, { headers:{ Authorization:`Bearer ${token}` }});
+    if(r.ok){
+      const d = await r.json().catch(()=>({items:[]}));
+      const arr = Array.isArray(d) ? d : (d.items || []);
+      return filterDocsByOwner(arr, userId);
+    }
+  }catch{}
+  // 2) genel endpoint
+  try{
+    const r = await fetch(`${DOCUMENTS_URL}?userId=${encodeURIComponent(userId)}`, { headers:{ Authorization:`Bearer ${token}` }});
+    if(r.ok){
+      const d = await r.json().catch(()=>({items:[]}));
+      const arr = Array.isArray(d) ? d : (d.items || []);
+      return filterDocsByOwner(arr, userId);
+    }
+  }catch{}
+  return [];
+}
+function renderOtherUserDocs(items){
+  const host = $("#vuDocs");
+  if(!host) return;
+  if(!items.length){ host.innerHTML = `<div class="docs-panel">Belge bulunamadı.</div>`; return; }
+  const rows = items.map(x=>{
+    const name = x.title || x.file?.originalName || x.originalName || "Belge";
+    const size = bytesToSize(x.file?.size ?? x.size ?? 0);
+    const when = formatDateTR(x.createdAt || x.updatedAt);
+    const fileUrl = absoluteUrl(x.file?.url || x.url || "#");
+    const id   = x._id || x.id || "";
+    const dlUrl = id ? `${DOCUMENTS_URL}/${id}/download` : fileUrl;
+    return `
+      <tr>
+        <td style="max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</td>
+        <td>${size}</td>
+        <td>${when||"-"}</td>
+        <td style="white-space:nowrap">
+          <button class="btn ghost" data-doc-open="${id}" data-doc-url="${dlUrl}" data-doc-fallback="${fileUrl}" data-doc-name="${name}">Aç / İndir</button>
+        </td>
+      </tr>`;
+  }).join("");
+  host.innerHTML = `
+    <div style="overflow:auto">
+      <table>
+        <thead><tr><th>Ad</th><th>Boyut</th><th>Tarih</th><th style="width:1%">İşlem</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+async function openUserDetail(userId){
+  $("#usrViewList").style.display="none";
+  $("#usrViewDetail").style.display="block";
+  $("#vuHeader").textContent = "Profil";
+
+  // alanları boşalt
+  fillUserView({});
+  $("#vuDocs").textContent = "Yükleniyor…";
+
+  // temel admin endpoint
+  const base = await safeJson(`${ADMIN_USERS_URL}/${userId}`, { headers:{ Authorization:`Bearer ${token}` }}) || {};
+  const baseUser = base.user || base;
+
+  // ayrıntı/profil endpointleri (ikisi de denenir)
+  const profile =
+    (await safeJson(`${PROFILE_URL}?userId=${encodeURIComponent(userId)}`, { headers:{ Authorization:`Bearer ${token}` }})) ||
+    (await safeJson(`${API}/api/admin/users/${userId}/profile`, { headers:{ Authorization:`Bearer ${token}` }})) ||
+    {};
+
+  // merge & doldur
+  const merged = { ...baseUser, ...(profile.user || profile) };
+  fillUserView(merged);
+
+  const fullName = `${pick(merged,["firstName","name","ad"])||""} ${pick(merged,["lastName","surname","soyad"])||""}`.trim() || "Profil";
+  $("#vuHeader").textContent = fullName;
+
+  // belgeler (sadece sahibinin)
+  const docs = await fetchUserDocuments(userId);
+  renderOtherUserDocs(docs);
+}
+
+/* ===== Belge butonları (me ve diğer kullanıcılar) ===== */
+document.addEventListener("click", async (e)=>{
+  // belge indir/aç (genel)
+  const openBtn = e.target.closest("[data-doc-open]");
+  if(openBtn){
+    const url = openBtn.getAttribute("data-doc-url");
+    const fb  = openBtn.getAttribute("data-doc-fallback");
+    const name = openBtn.getAttribute("data-doc-name") || "belge";
+    downloadWithAuth(url, name).catch(async ()=>{
+      if(fb && fb !== "#"){
+        try{ await downloadWithAuth(fb, name); }
+        catch{ window.open(fb, "_blank"); }
+      }else{
+        alert("Dosya indirilemedi.");
+      }
+    });
+    return;
+  }
+
+  // belge sil (sadece kendi belgelerim)
+  const delDoc = e.target.closest("[data-doc-del]");
+  if(delDoc){
+    const id = delDoc.getAttribute("data-doc-del");
+    if(!id) return;
+    if(!confirm("Bu belgeyi KALICI olarak silmek istiyor musunuz?")) return;
+    const r = await fetch(`${DOCUMENTS_URL}/${id}`, { method:"DELETE", headers:{ Authorization:`Bearer ${token}` }});
+    const d = await r.json().catch(()=>({}));
+    if(!r.ok) return alert(d.message || "Silinemedi.");
+    loadDocuments();
+    return;
+  }
+
+  // belge yeniden adlandır
+  const rnBtn  = e.target.closest("[data-doc-rename]");
+  if(rnBtn){
+    const id = rnBtn.getAttribute("data-doc-rename");
+    const current = DOCS_CACHE.find(x=>(x._id||x.id)===id);
+    const now = prompt("Yeni ad:", current?.title || current?.file?.originalName || current?.originalName || "");
+    if(now==null) return;
+    const r = await fetch(`${DOCUMENTS_URL}/${id}`, {
+      method:"PUT",
+      headers:{ "Content-Type":"application/json", Authorization:`Bearer ${token}` },
+      body: JSON.stringify({ title: now })
+    });
+    const d = await r.json().catch(()=>({}));
+    if(!r.ok) return alert(d.message || "Güncellenemedi.");
+    loadDocuments();
+  }
+});
+<!-- anasayfa.html içinde, body’nin sonunda -->
+
+
+
+/** ======= Helpers ======= **/
+
+const main = () => document.getElementById("main") || document.querySelector("#mainContent") || document.querySelector(".main");
+
+function authFetch(url, opts={}) {
+  return fetch(url, {
+    ...opts,
+    headers: {
+      "Content-Type": "application/json",
+      ...(opts.headers||{}),
+      ...(token ? { Authorization: "Bearer " + token } : {})
+    }
+  });
+}
+function toEmbed(link) {
+  if (!link) return null;
+  if (/youtube\.com\/watch\?v=|youtu\.be\//i.test(link)) {
+    const id = link.match(/(?:v=|\.be\/)([^&]+)/)?.[1] || "";
+    return `<iframe width="100%" height="360" src="https://www.youtube.com/embed/${id}" frameborder="0" allowfullscreen></iframe>`;
+  }
+  if (/\.(mp4|webm|ogg)$/i.test(link)) {
+    return `<video width="100%" controls src="${link}"></video>`;
+  }
+  return `<a class="btn" target="_blank" href="${link}">Videoyu aç</a>`;
+}
+function card(html){ return `<div class="card" style="background:#0b1220;border:1px solid #1f2937;border-radius:12px;padding:16px;margin:12px 0;">${html}</div>`; }
+function btn(text, attrs=""){ return `<button ${attrs} style="padding:8px 12px;border:1px solid #334155;border-radius:10px;background:#111827;color:#e5e7eb;cursor:pointer;">${text}</button>`; }
+
+/** Bölüm seçicisi */
+function sec(id){ return document.getElementById(id); }
+function writeTo(id, html){
+  const el = sec(id);
+  if (!el) return;
+  el.innerHTML = html;
+  showSection(id);           // görünür yap
+  el.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+/** ======= Oryantasyon -> Genel Bilgiler ======= **/
+async function viewOryGenel() {
+  try{
+    const r = await fetch(`${API}/api/cms/oryantasyon-genel-bilgiler`);
+    if(!r.ok){ writeTo("ory-genel", `<h3>Oryantasyon - Genel Bilgiler</h3><div class="card">İçerik yüklenemedi.</div>`); return; }
+    const data = await r.json();
+    writeTo("ory-genel", `
+      <h3>Oryantasyon - Genel Bilgiler</h3>
+      <div class="card">${data?.html || "<p>İçerik bulunamadı.</p>"}</div>
+    `);
+  }catch{
+    writeTo("ory-genel", `<h3>Oryantasyon - Genel Bilgiler</h3><div class="card">İçerik yüklenemedi.</div>`);
+  }
+}
+
+/** ======= Oryantasyon -> Eğitimler ======= **/
+async function viewOryEgitimler() {
+  const r = await authFetch(`${API}/api/trainings`);
+  const { items=[] } = await r.json();
+  if (!items.length){
+    writeTo("ory-egitimler", `<h3>Oryantasyon - Eğitimler</h3><div class="card">Gösterilecek eğitim yok.</div>`);
+    return;
+  }
+  const html = items.map(t=>{
+    const video = toEmbed(t.videoLink);
+    const files = (t.files||[]).map(f=>`<li><a href="${f.url}" download>${f.originalName || "Dosya"}</a></li>`).join("");
+    return `
+      <div class="card">
+        <h4 style="margin:0 0 8px 0">${t.title}</h4>
+        <p style="color:#94a3b8">${t.description||""}</p>
+        ${video ? `<div style="margin:12px 0">${video}</div>` : ""}
+        ${files ? `<div><b>Ekler</b><ul>${files}</ul></div>` : ""}
+        <button class="btn" data-training="${t._id}" onclick="markViewed(this)">Görüntülendi olarak işaretle</button>
+      </div>`;
+  }).join("");
+  writeTo("ory-egitimler", `<h3>Oryantasyon - Eğitimler</h3>${html}`);
+}
+
+/** ======= Oryantasyon -> Belgeler ======= **/
+async function viewOryBelgeler() {
+  const r = await authFetch(`${API}/api/documents/public`);
+  const { items=[] } = await r.json();
+  if (!items.length){
+    writeTo("ory-belgeler", `<h3>Oryantasyon - Belgeler</h3><div class="card">Belge bulunamadı.</div>`);
+    return;
+  }
+  const html = items.map(d=>{
+    const icon = d.file?.mimeType?.includes("pdf") ? "📄" : "📁";
+    return `
+      <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-weight:600">${icon} ${d.title}</div>
+          <div style="color:#94a3b8;font-size:14px">${d.description||""}</div>
+        </div>
+        <div><a href="${d.file?.url}" download class="btn">İndir</a></div>
+      </div>`;
+  }).join("");
+  writeTo("ory-belgeler", `<h3>Oryantasyon - Belgeler</h3>${html}`);
+}
+
+/** ======= Oryantasyon -> Ödevler (Quiz) ======= **/
+async function viewOryOdevler() {
+  const r = await authFetch(`${API}/api/quizzes`);
+  const { items=[] } = await r.json();
+  if (!items.length){
+    writeTo("ory-odevler", `<h3>Oryantasyon - Ödevler / Testler</h3><div class="card">Ödev/Test bulunamadı.</div>`);
+    return;
+  }
+  const html = items.map(q=>`
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div><div style="font-weight:600">📝 ${q.title}</div></div>
+      <div><button class="btn" onclick="openQuiz('${q._id}')">Teste Gir</button></div>
+    </div>`).join("");
+  writeTo("ory-odevler", `<h3>Oryantasyon - Ödevler / Testler</h3>${html}<div id="quizArea"></div>`);
+}
+
+/** Menü bağlama */
+function bindOryantasyonMenu(){
+  const map = {
+    "oryantasyon-genel":     viewOryGenel,
+    "oryantasyon-egitimler": viewOryEgitimler,
+    "oryantasyon-belgeler":  viewOryBelgeler,
+    "oryantasyon-odevler":   viewOryOdevler
+  };
+  Object.entries(map).forEach(([key,fn])=>{
+    const el = document.querySelector(`[data-view="${key}"]`);
+    if (el) el.addEventListener("click", (e)=>{ e.preventDefault(); fn(); });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  bindOryantasyonMenu();
+  // sayfa açılınca varsayılan:
+  viewOryGenel();
+  });
+
+</script>
+</body>
+</html>

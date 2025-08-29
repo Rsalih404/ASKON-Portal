@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>ASKON Portal | Ana Sayfa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+  :root{
+    --bg:#0f172a; --panel:#0b1220; --border:#1f2937; --text:#e5e7eb; --muted:#94a3b8;
+    --accent:#38bdf8; --accent-strong:#0ea5e9; --warnbg:#fff3cd; --warntext:#664d03;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial
+  }
+
+  /* ====== Layout ====== */
+  .layout{
+    display:grid; height:100%;
+    grid-template-columns:240px 1fr;
+    grid-template-rows:56px 1fr;
+    grid-template-areas:"top top" "side main";
+  }
+
+  /* ====== Top Nav ====== */
+  nav{
+    grid-area:top; display:flex; align-items:center; justify-content:space-between;
+    padding:10px 14px;
+    background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    border-bottom:1px solid var(--border);
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-weight:700; }
+  .brand .dot{ width:10px; height:10px; border-radius:50%; background:var(--accent); }
+
+  .nav-links a{
+    color:var(--text); text-decoration:none; margin-right:12px; font-size:14px;
+  }
+  .profile{ display:flex; align-items:center; gap:12px; }
+  .pill{
+    background:var(--panel); border:1px solid var(--border);
+    padding:6px 10px; border-radius:999px; font-size:12px; color:var(--muted);
+  }
+  .logout{
+    border:none; background:linear-gradient(180deg,var(--accent),var(--accent-strong));
+    color:#fff; padding:8px 12px; border-radius:10px; cursor:pointer;
+  }
+
+  /* ====== Sidebar ====== */
+  aside{
+    grid-area:side; background:var(--panel); border-right:1px solid var(--border);
+    padding:12px; overflow:auto;
+  }
+  .side-group{ margin-bottom:16px; }
+  .side-group h3{ margin:10px 0; font-size:14px; color:var(--muted); cursor:pointer; }
+  .side-group ul{ list-style:none; margin:0; padding:0; }
+  .side-group li a{
+    display:block; padding:8px 10px; border-radius:8px; color:var(--text); text-decoration:none;
+  }
+  .side-group li a:hover{ background:#0f172a; }
+
+  /* ====== Main ====== */
+  main{ grid-area:main; padding:14px; overflow:auto; }
+  .banner{
+    display:none; background:var(--warnbg); color:var(--warntext);
+    border:1px solid #ffecb5; border-radius:10px; padding:10px 12px; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .btn{
+    border:none; background:linear-gradient(180deg,var(--accent),var(--accent-strong));
+    color:#fff; padding:8px 12px; border-radius:10px; cursor:pointer;
+  }
+  .btn.ghost{
+    background:#0b1220; border:1px solid var(--border); color:var(--text);
+  }
+  .card{
+    background:var(--panel); border:1px solid var(--border);
+    border-radius:12px; padding:14px; margin-bottom:12px;
+  }
+
+  /* ====== Modal ====== */
+  .modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); padding:20px; z-index:10; }
+  .modal .content{
+    width:min(92vw,520px); margin:6vh auto; background:var(--panel);
+    border:1px solid var(--border); border-radius:12px; padding:16px;
+  }
+  .row{ display:grid; gap:10px; }
+
+  /* ====== Form ====== */
+  input, textarea, select{
+    border-radius:10px; border:1px solid var(--border);
+    background:#0f172a; color:var(--text); padding:10px 12px; width:100%;
+  }
+  input{ height:40px; }
+  select{ height:40px; }
+
+  /* ====== Profile Box ====== */
+  .profile-box{
+    display:flex; align-items:center; gap:10px; position:relative;
+    background:var(--panel); border:1px solid var(--border);
+    border-radius:12px; padding:6px 10px; cursor:pointer;
+    transition: box-shadow .2s, transform .06s, border-color .2s;
+  }
+  .profile-box:hover{ box-shadow:0 0 0 3px rgba(56,189,248,.15); border-color:var(--accent); }
+  .profile-box:active{ transform: translateY(1px); }
+
+  .avatar{
+    width:32px; height:32px; border-radius:50%;
+    display:grid; place-items:center;
+    background: radial-gradient(120% 120% at 30% 30%, var(--accent), var(--accent-strong));
+    color:#fff; font-weight:700; letter-spacing:.3px; font-size:13px;
+  }
+  .meta .name{ font-weight:700; font-size:13px; line-height:1.1; }
+  .meta .sub{ font-size:12px; color:var(--muted); margin-top:2px; }
+
+  .pulse-dot{
+    position:absolute; top:-4px; right:-4px; width:10px; height:10px; border-radius:50%;
+    background:#22c55e; box-shadow:0 0 0 0 rgba(34,197,94,.7); animation:pulse 1.6s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(34,197,94,.6) }
+    70%{ box-shadow:0 0 0 10px rgba(34,197,94,0) }
+    100%{ box-shadow:0 0 0 0 rgba(34,197,94,0) }
+  }
+
+  .coachmark{
+    display:none; position:absolute; right:0; top:54px;
+    background:var(--panel); color:var(--text); border:1px solid var(--border);
+    border-radius:10px; padding:8px 10px; font-size:12px; white-space:nowrap;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  .coachmark::after{
+    content:""; position:absolute; top:-6px; right:14px; width:10px; height:10px;
+    background:var(--panel); border-left:1px solid var(--border); border-top:1px solid var(--border);
+    transform: rotate(45deg);
+  }
+  .coachmark.show{ display:block; animation: pop .18s ease-out; }
+  @keyframes pop{ from{ transform:translateY(-6px); opacity:0 } to{ transform:none; opacity:1 } }
+
+  /* ====== Profil & Belgeler grid ====== */
+  .split-row{
+    display: grid;
+    grid-template-columns: minmax(420px, 42%) minmax(320px, 58%);
+    gap: 12px;
+    align-items: start;
+  }
+  @media (max-width: 980px){
+    .split-row{ grid-template-columns: 1fr; }
+  }
+
+  /* Hakkımda */
+  .about{
+    background:#0f172a; border:1px solid var(--border);
+    border-radius:12px; padding:12px; margin:12px 0;
+  }
+  .about .muted{ font-size:12px; color:#94a3b8; margin-top:6px; }
+
+  /* Belgeler */
+  .controls{
+    display:grid; grid-template-columns: 1fr 180px; gap:8px; margin:10px 0 6px 0;
+  }
+  @media (max-width:700px){
+    .controls{ grid-template-columns: 1fr; }
+  }
+  .dropzone{
+    border:2px dashed var(--border); border-radius:12px; padding:16px;
+    background:#0f172a; text-align:center; transition:border-color .2s, background .2s;
+  }
+  .dropzone.dragover{ border-color: var(--accent); background:#0b1220; }
+  .file-list{ display:grid; gap:8px; margin-top:10px; max-height:360px; overflow:auto; }
+  .file-item{
+    display:flex; align-items:center; gap:10px; background:#0f172a;
+    border:1px solid var(--border); border-radius:10px; padding:8px 10px;
+  }
+  .file-item .meta{ flex:1; }
+  .file-item .meta .name{ font-weight:600; }
+  .file-item .meta .sub{ font-size:12px; color:var(--muted); }
+  .file-item .actions a{
+    margin-left:8px; background:var(--panel); color:var(--text);
+    border:1px solid var(--border); border-radius:8px; padding:6px 8px; text-decoration:none;
+  }
+  .hint{ font-size:12px; color:#94a3b8; margin-top:6px; }
+
+  /* ===========================
+   BELGELER (docs-*) TEMA UYUMLU OVERRIDE
+   -> Bunu CSS dosyanızın EN SONUNA ekleyin
+   =========================== */
+
+/* 1) Tema Değişkenleri (mevcut değişkenler varsa onları kullan, yoksa fall-back) */
+.docs-panel {
+  /* Arka plan & yazı */
+  --docs-bg:           var(--card-bg, var(--bs-body-bg, #ffffff));
+  --docs-foreground:   var(--body-color, var(--bs-body-color, #111827));
+  --docs-muted:        var(--muted-foreground, var(--bs-secondary-color, #6b7280));
+  --docs-border:       var(--border-color, var(--bs-border-color, #e5e7eb));
+  --docs-link:         var(--link-color, var(--bs-link-color, #2563eb));
+
+  /* Vurgu / Aksiyon rengi */
+  --docs-accent:       var(--primary, var(--bs-primary, #3b82f6));
+
+  /* Yüzey tonları (kartlar, butonlar) */
+  --docs-surface-1:    var(--surface-1, var(--card-bg, var(--bs-body-bg, #ffffff)));
+  /* surface-2: arka plan üzerinde hafif ayrışan alan */
+  --docs-surface-2:    var(--surface-2, rgba(0,0,0,0.02));
+
+  /* Hover & focus */
+  --docs-hover:        rgba(0,0,0,0.04);
+  --docs-focus:        var(--focus-ring, rgba(59,130,246,0.35));
+
+  color: var(--docs-foreground);
+}
+
+/* Dark fallback (kendi dark değişkenlerin yoksa devreye girer) */
+@media (prefers-color-scheme: dark) {
+  .docs-panel {
+    --docs-bg:         var(--card-bg, #0b1220);
+    --docs-foreground: var(--body-color, #e5e7eb);
+    --docs-muted:      var(--muted-foreground, #9ca3af);
+    --docs-border:     var(--border-color, #1f2937);
+    --docs-link:       var(--link-color, #60a5fa);
+    --docs-accent:     var(--primary, #60a5fa);
+    --docs-surface-1:  var(--surface-1, #0e172a);
+    --docs-surface-2:  var(--surface-2, rgba(255,255,255,0.06));
+    --docs-hover:      rgba(255,255,255,0.08);
+    --docs-focus:      rgba(96,165,250,0.45);
+  }
+}
+
+/* 2) Ortak Kontroller */
+.docs-panel .docs-input {
+  width:100%;
+  max-width: 420px;
+  padding: .6rem .8rem;
+  border: 1px solid var(--docs-border);
+  border-radius: 10px;
+  background: var(--docs-surface-1);
+  color: var(--docs-foreground);
+  outline: none;
+}
+.docs-panel .docs-input:focus {
+  box-shadow: 0 0 0 4px var(--docs-focus);
+  border-color: transparent;
+}
+
+.docs-panel .docs-btn {
+  padding: .5rem .8rem;
+  border: 1px solid var(--docs-border);
+  background: var(--docs-surface-1);
+  border-radius: 10px;
+  color: var(--docs-foreground);
+  cursor: pointer;
+  transition: background .15s ease, transform .05s ease;
+}
+.docs-panel .docs-btn:hover { background: var(--docs-hover); }
+.docs-panel .docs-btn:active { transform: translateY(1px); }
+.docs-panel .docs-btn-ghost { background: transparent; }
+.docs-panel .docs-btn-link {
+  border: none; background: transparent; padding: 0;
+  color: var(--docs-link); text-decoration: underline; cursor: pointer;
+}
+
+/* 3) Toolbar */
+.docs-panel .docs-toolbar {
+  display:flex; justify-content:space-between; align-items:center; gap:8px;
+}
+.docs-panel .docs-left, 
+.docs-panel .docs-right { display:flex; gap:8px; align-items:center; }
+
+/* 4) Dropzone / Yükleyici */
+#dzWrapper { /* varsa bu kaplayıcı için nötr arka plan */
+  background: var(--docs-surface-2);
+  border: 1px dashed var(--docs-border);
+  border-radius: 12px;
+  padding: 12px;
+}
+.docs-panel .docs-uploader { display:grid; gap:10px; }
+
+.docs-panel .docs-dropzone,
+#dz { /* eski id=dz için de aynı görünüm */
+  border: 2px dashed var(--docs-border);
+  border-radius: 14px;
+  padding: 24px;
+  background: var(--docs-surface-2);
+  transition: background .15s ease, border-color .15s ease;
+  text-align:center;
+}
+.docs-panel .docs-dropzone.docs-over,
+#dz.dragover {
+  background: var(--docs-hover);
+  border-color: var(--docs-accent);
+}
+.docs-panel .docs-dropzone-inner { display:grid; place-items:center; gap:6px; }
+.docs-panel .docs-drop-icon { font-size:28px; opacity:.9; }
+.docs-panel .docs-hint { font-size:.85em; color: var(--docs-muted); }
+
+/* 5) Yükleme sırası + progress */
+.docs-panel .docs-uploads { display:grid; gap:8px; }
+.docs-panel .docs-upload-item {
+  border:1px solid var(--docs-border);
+  border-radius:10px;
+  padding:8px;
+  display:grid; gap:6px; background: var(--docs-surface-1);
+}
+.docs-panel .docs-upload-file { display:flex; justify-content:space-between; gap:8px; }
+.docs-panel .docs-progress { height:8px; background: var(--docs-surface-2); border-radius: 6px; overflow: hidden; }
+.docs-panel .docs-bar { height:100%; width:0%; background: var(--docs-accent); transition: width .2s ease; }
+
+/* 6) Liste / Kartlar */
+.docs-panel .docs-list { display:grid; gap:10px; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); }
+.docs-panel .docs-card {
+  border:1px solid var(--docs-border);
+  border-radius:12px;
+  padding:12px;
+  background: var(--docs-surface-1);
+  display:grid; gap:8px;
+}
+.docs-panel .docs-card-head { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
+.docs-panel .docs-title { font-weight:600; line-height:1.2; color: var(--docs-foreground); }
+.docs-panel .docs-badges { display:flex; flex-wrap:wrap; gap:6px; }
+.docs-panel .docs-badges .b {
+  font-size:.75em; padding:.2rem .45rem; border-radius:999px;
+  background: var(--docs-surface-2); border:1px solid var(--docs-border);
+  color: var(--docs-foreground);
+}
+.docs-panel .docs-desc { color: var(--docs-muted); min-height:1.6em; }
+.docs-panel .docs-footer { display:flex; justify-content:space-between; align-items:center; }
+.docs-panel .docs-meta-text { color: var(--docs-muted); font-size:.85em; }
+.docs-panel .docs-download { color: var(--docs-link); }
+
+/* 7) Eski “dosya listesi” (fileList / .file-item) ile uyum */
+#fileList { display:grid; gap:10px; }
+#fileList .file-item {
+  display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center;
+  padding:10px 12px; border:1px solid var(--docs-border); border-radius:12px;
+  background: var(--docs-surface-1);
+}
+#fileList .file-item .icon { font-size:22px; opacity:.9; }
+#fileList .file-item .name { font-weight:600; color: var(--docs-foreground); }
+#fileList .file-item .sub  { color: var(--docs-muted); font-size:.9em; }
+#fileList .file-item .actions a {
+  border:1px solid var(--docs-border);
+  padding: .35rem .6rem; border-radius:10px; text-decoration:none;
+  color: var(--docs-foreground); background: var(--docs-surface-1);
+}
+#fileList .file-item .actions a:hover { background: var(--docs-hover); }
+
+/* 8) Küçük erişilebilirlik detayları */
+.docs-panel a:focus,
+.docs-panel .docs-btn:focus,
+#fileList .file-item .actions a:focus,
+.docs-panel .docs-input:focus {
+  outline: none; box-shadow: 0 0 0 4px var(--docs-focus);
+}
+/* ===========================
+   GÖZAT BUTONU GÜZELLEŞTİRME
+   (CSS dosyanızın EN SONUNA ekleyin)
+   =========================== */
+
+/* Tema değişkenleri (önceden tanımlıysa onları kullanır) */
+:root {
+  --docs-accent:       var(--primary, var(--bs-primary, #3b82f6));
+  --docs-foreground:   var(--body-color, var(--bs-body-color, #111827));
+  --docs-border:       var(--border-color, var(--bs-border-color, #e5e7eb));
+  --docs-hover:        rgba(0,0,0,0.05);
+  --docs-focus:        rgba(59,130,246,0.35);
+  --docs-surface-1:    var(--card-bg, var(--bs-body-bg, #ffffff));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --docs-foreground: #e5e7eb;
+    --docs-border: #263244;
+    --docs-hover: rgba(255,255,255,0.08);
+    --docs-focus: rgba(96,165,250,0.45);
+    --docs-surface-1: #0e172a;
+  }
+}
+
+/* Hem eski (#selectFilesBtn) hem yeni (.docs-link-btn) hedeflenir */
+#selectFilesBtn,
+.docs-link-btn,
+.docs-btn-browse {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem 1rem;
+  border: 1px solid var(--docs-border);
+  border-radius: 999px;      /* pill görünüm */
+  background: var(--docs-surface-1);
+  color: var(--docs-foreground);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, transform .05s ease;
+  text-decoration: none;     /* .docs-link-btn link gibi ise alt çizgiyi kaldır */
+}
+
+/* Simge (isteğe bağlı) */
+#selectFilesBtn::before,
+.docs-link-btn::before,
+.docs-btn-browse::before {
+  content: "📁";
+  font-size: 1.05em;
+  line-height: 1;
+}
+
+/* Hover/Active/Focus halleri */
+#selectFilesBtn:hover,
+.docs-link-btn:hover,
+.docs-btn-browse:hover {
+  background: var(--docs-hover);
+  border-color: var(--docs-accent);
+}
+
+#selectFilesBtn:active,
+.docs-link-btn:active,
+.docs-btn-browse:active {
+  transform: translateY(1px);
+}
+
+#selectFilesBtn:focus,
+.docs-link-btn:focus,
+.docs-btn-browse:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--docs-focus);
+  border-color: transparent;
+}
+
+/* Drag alanı aktifken butonu da vurgula (opsiyonel) */
+#dz.dragover #selectFilesBtn,
+#dz.dragover .docs-link-btn {
+  border-color: var(--docs-accent);
+  box-shadow: 0 0 0 4px var(--docs-focus);
+}
+
+/* Küçük boy varyantı (istersen class ekleyip kullan) */
+.docs-browse-sm {
+  padding: .45rem .8rem;
+  font-weight: 600;
+}
+
+/* İkonu metnin sağında istersen bu sınıfı ekle */
+.docs-browse-icon-right::before {
+  order: 2;
+  margin-left: .25rem;
+  content: "📎";
+}
+/* --- Form ve grid boşluklarını biraz aç --- */
+.row{ gap:14px; }                          /* modal içi */
+.profile-grid .summary-grid{ gap:14px; }   /* profil özet kutuları */
+#profileForm{ gap:16px !important; }       /* profil formu */
+.controls{ gap:12px; margin:14px 0 10px;}  /* belge filtre/ara üstü */
+.docs-meta{ gap:12px; }                    /* başlık/kategori/etiket/açıklama grid'i */
+.card input,.card select,.card textarea{ margin-top:6px; } /* label-altı nefes */
+
+.docs-panel .docs-dropzone{ padding:28px; } /* drop alanını biraz ferahlat */
+.docs-panel .docs-upload-item{ padding:10px; }
+.docs-panel .docs-card{ padding:14px; }
+
+/* Gözat butonu zaten eklemiştik; hover netliği artır */
+#selectFilesBtn:hover,
+.docs-link-btn:hover,
+.docs-btn-browse:hover{
+  filter: saturate(1.05);
+}
+
+  </style>
+</head>
+<body>
+<div class="layout">
+  <!-- Üst bar -->
+  <nav>
+    <div class="brand"><span class="dot"></span> ASKON PORTAL</div>
+
+    <div class="nav-links">
+      <a href="anasayfa.html" data-link="home">Ana Sayfa</a>
+      <a href="#" data-link="etkinlikler">Etkinlikler</a>
+      <a href="#" data-link="duyurular">Duyurular</a>
+      <a href="https://askon.com.tr" target="_blank" rel="noopener">Web</a>
+    </div>
+
+    <div class="profile">
+      <span id="userDept" class="pill">—</span>
+      <span id="userStatus" class="pill">—</span>
+
+      <!-- Profil Kutusu -->
+      <div id="profileBox" class="profile-box" role="button" tabindex="0" aria-label="Profilim">
+        <div class="avatar"><span id="avatarInitials">—</span></div>
+        <div class="meta">
+          <div id="profileName" class="name">—</div>
+          <div class="sub">Profilim</div>
+        </div>
+        <span class="pulse-dot" aria-hidden="true"></span>
+        <div id="coachmark" class="coachmark" role="note">Profilini düzenlemek için tıkla</div>
+      </div>
+
+      <button id="logoutBtn" class="logout">Çıkış</button>
+    </div>
+  </nav>
+
+  <!-- Sol menü -->
+  <aside>
+    <!-- Oryantasyon (herkese) -->
+    <div class="side-group" data-roles="stajyer,personel,admin">
+      <h3>Oryantasyon</h3>
+      <ul>
+        <li><a href="#" data-open="ory-genel">Genel Bilgiler</a></li>
+        <li><a href="#" data-open="ory-egitimler">Eğitimler</a></li>
+        <li><a href="#" data-open="ory-belgeler">Belgeler</a></li>
+        <li><a href="#" data-open="ory-odevler">Ödevler</a></li>
+      </ul>
+    </div>
+
+    <!-- Stajyer -->
+    <div class="side-group" data-roles="stajyer">
+      <h3>Staj Süreci</h3>
+      <ul>
+        <li><a href="#" data-open="stj-genel">Genel Bilgiler</a></li>
+        <li><a href="#" data-open="stj-sorumluluklar">Sorumluluklar</a></li>
+        <li><a href="#" data-open="stj-ornprojeler">Örnek Projeler</a></li>
+        <li><a href="#" data-open="stj-projelerim">Projelerim</a></li>
+        <li><a href="#" data-open="stj-pusulam">Pusulam</a></li>
+      </ul>
+    </div>
+
+    <!-- Personel -->
+    <div class="side-group" data-roles="personel">
+      <h3>Personel</h3>
+      <ul>
+        <li><a href="#" data-open="prs-ik">İK Duyuruları</a></li>
+        <li><a href="#" data-open="prs-belgeler">Personel Belgeleri</a></li>
+      </ul>
+    </div>
+
+    <!-- Admin & Superadmin -->
+    <div class="side-group" data-roles="admin">
+      <h3>Yönetim</h3>
+      <ul>
+        <li><a href="#" data-open="adm-egitim-ekle">Eğitim Yükle</a></li>
+        <li><a href="#" data-open="adm-belge-ekle">Belge Yükle</a></li>
+        <li><a href="#" data-open="adm-cms">CMS Sayfaları</a></li>
+      </ul>
+    </div>
+
+    <!-- Süper Admin -->
+    <div class="side-group" data-statusdetail="superadmin">
+      <h3>Süper Admin</h3>
+      <ul>
+        <li><a href="#" data-open="sap-ayarlar">Sistem Ayarları</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- İçerik -->
+  <main>
+    <!-- Şifre uyarı bandı (opsiyonel) -->
+    <div id="pwdBanner" class="banner" style="display:none">
+      <div><strong>Güvenlik:</strong> Lütfen şifrenizi düzenli aralıklarla değiştirin.</div>
+      <button id="openPwd" class="btn">Şifreyi Değiştir</button>
+    </div>
+
+    <!-- Ana sayfa -->
+    <section id="home" class="card">
+      <h2>Hoş geldiniz</h2>
+      <p>Soldaki menüden bölümleri gezebilir; sağ üstteki profil kutusuna tıklayarak profilinizi düzenleyebilirsiniz.</p>
+    </section>
+
+    <!-- Oryantasyon -->
+    <section id="ory-genel" class="card" hidden>
+      <h3>Oryantasyon - Genel Bilgiler</h3>
+      <p>Oryantasyona dair genel açıklamalar… (CMS ile doldurulacak)</p>
+    </section>
+    <section id="ory-egitimler" class="card" hidden>
+      <h3>Oryantasyon - Eğitimler</h3>
+      <p>Herkese açık eğitimler burada listelenecek…</p>
+    </section>
+    <section id="ory-belgeler" class="card" hidden>
+      <h3>Oryantasyon - Belgeler</h3>
+      <p>İndirilebilir dökümanlar…</p>
+    </section>
+    <section id="ory-odevler" class="card" hidden>
+      <h3>Oryantasyon - Ödevler</h3>
+      <p>Ödev/Test modülü buraya bağlanacak…</p>
+    </section>
+
+    <!-- Staj -->
+    <section id="stj-genel" class="card" hidden><h3>Staj - Genel Bilgiler</h3></section>
+    <section id="stj-sorumluluklar" class="card" hidden><h3>Staj - Sorumluluklar</h3></section>
+    <section id="stj-ornprojeler" class="card" hidden><h3>Staj - Örnek Projeler</h3></section>
+    <section id="stj-projelerim" class="card" hidden><h3>Staj - Projelerim</h3></section>
+    <section id="stj-pusulam" class="card" hidden><h3>Staj - Pusulam</h3></section>
+
+    <!-- Personel -->
+    <section id="prs-ik" class="card" hidden><h3>Personel - İK Duyuruları</h3></section>
+    <section id="prs-belgeler" class="card" hidden><h3>Personel - Belgeler</h3></section>
+
+    <!-- Yönetim -->
+    <section id="adm-egitim-ekle" class="card" hidden><h3>Yönetim - Eğitim Yükle</h3></section>
+    <section id="adm-belge-ekle" class="card" hidden><h3>Yönetim - Belge Yükle</h3></section>
+    <section id="adm-cms" class="card" hidden><h3>Yönetim - CMS Sayfaları</h3></section>
+
+    <!-- Süper Admin -->
+    <section id="sap-ayarlar" class="card" hidden><h3>Süper Admin - Sistem Ayarları</h3></section>
+
+    <!-- PROFİL + BELGELER -->
+    <div class="split-row" id="profileRow">
+      <!-- SOL: PROFİL -->
+      <section id="profil" class="card" hidden>
+        <h3>Profilim</h3>
+        <p style="color:#94a3b8;margin-top:6px">
+          Ad, Soyad ve Statü alanları sistem tarafından yönetilir. Buradan
+          <strong>Doğum Tarihi</strong>, <strong>Adres</strong> ve <strong>Telefon</strong> bilgilerinizi güncelleyebilirsiniz.
+        </p>
+
+        <!-- Hakkımda -->
+        <div class="about">
+          <div style="font-weight:600;margin-bottom:6px;">Hakkımda</div>
+          <textarea id="pfAbout" placeholder="Kısaca kendinizi tanıtın (örn. Merhaba, ben ...)" rows="5" maxlength="500"></textarea>
+          <div class="muted">En fazla 500 karakter.</div>
+        </div>
+
+        <!-- Özet + Form -->
+        <div class="profile-grid" style="margin-top:12px;">
+          <!-- Özet -->
+          <div class="summary-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="background:#0f172a;border:1px solid #1f2937;border-radius:12px;padding:12px;">
+              <div style="font-size:12px;color:#94a3b8;">Ad</div>
+              <input id="pfFirstName" type="text" disabled />
+            </div>
+            <div style="background:#0f172a;border:1px solid #1f2937;border-radius:12px;padding:12px;">
+              <div style="font-size:12px;color:#94a3b8;">Soyad</div>
+              <input id="pfLastName" type="text" disabled />
+            </div>
+            <div style="background:#0f172a;border:1px solid #1f2937;border-radius:12px;padding:12px;">
+              <div style="font-size:12px;color:#94a3b8;">Departman</div>
+              <input id="pfDepartment" type="text" disabled />
+            </div>
+            <div style="background:#0f172a;border:1px solid #1f2937;border-radius:12px;padding:12px;">
+              <div style="font-size:12px;color:#94a3b8;">Statü</div>
+              <input id="pfStatus" type="text" disabled />
+            </div>
+          </div>
+
+          <!-- Düzenlenebilir form -->
+          <form id="profileForm" style="display:grid; gap:12px; margin-top:12px;">
+            <div>
+              <div style="font-size:12px;color:#94a3b8;">Doğum Tarihi</div>
+              <input id="pfBirthDate" type="date" />
+            </div>
+            <div>
+              <div style="font-size:12px;color:#94a3b8;">Adres</div>
+              <input id="pfAddress" type="text" placeholder="Adresiniz" />
+            </div>
+            <div>
+              <div style="font-size:12px;color:#94a3b8;">Telefon</div>
+              <input id="pfPhone" type="tel" placeholder="05xx xxx xx xx" pattern="^0?\\d{10,11}$" />
+            </div>
+            <div style="display:flex; gap:8px; margin-top:4px;">
+              <button type="submit" class="btn">Kaydet</button>
+              <button type="button" id="pfReset" class="btn ghost">Sıfırla</button>
+              <button type="button" id="openPwdProfile" class="btn" style="margin-left:auto;">Şifreyi Değiştir</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- SAĞ: BELGELER -->
+      <section id="belgelerim" class="card" hidden>
+       <div class="docs-panel" id="docs-panel">
+  <!-- Üst araç çubuğu -->
+  <div class="docs-toolbar">
+    <div class="docs-left">
+      <input type="text" id="docs-search" class="docs-input" placeholder="Ara (başlık, kategori, etiket)..." />
+    </div>
+    <div class="docs-right">
+      <button type="button" id="docs-refresh" class="docs-btn">Yenile</button>
+      <button type="button" id="docs-toggle-upload" class="docs-btn docs-btn-ghost" title="Yükleme Alanını Aç/Kapat">Yükle</button>
+    </div>
+  </div>
+
+  <!-- Drag & Drop yükleme alanı (izin yoksa otomatik gizlenir) -->
+  <div class="docs-uploader" id="docs-uploader" hidden>
+    <div class="docs-dropzone" id="docs-dropzone">
+      <input type="file" id="docs-file-input" multiple hidden />
+      <div class="docs-dropzone-inner">
+        <div class="docs-drop-icon" aria-hidden="true">📎</div>
+        <div class="docs-drop-text">
+          Dosyaları buraya sürükleyip bırak<br/>
+          veya <button type="button" class="docs-link-btn" id="docs-browse">gözat</button>
+        </div>
+        <div class="docs-hint">Max 2 GB</div>
+      </div>
+    </div>
+
+    <!-- Yükleme işlemleri/progres -->
+    <div class="docs-uploads" id="docs-uploads"></div>
+
+    <!-- (İsteğe bağlı) meta alanları -->
+    <div class="docs-meta">
+      <input type="text" id="docs-title" class="docs-input" placeholder="Başlık (boşsa dosya adı kullanılır)">
+      <input type="text" id="docs-category" class="docs-input" placeholder="Kategori">
+      <input type="text" id="docs-tags" class="docs-input" placeholder="Etiketler (virgülle)">
+      <textarea id="docs-desc" class="docs-input" rows="2" placeholder="Açıklama (opsiyonel)"></textarea>
+    </div>
+  </div>
+
+  <!-- Liste -->
+  <div class="docs-list" id="docs-list" aria-live="polite"></div>
+
+  <!-- Şablonlar -->
+  <template id="tpl-upload-item">
+    <div class="docs-upload-item">
+      <div class="docs-upload-file">
+        <span class="docs-name"></span>
+        <span class="docs-size"></span>
+      </div>
+      <div class="docs-progress">
+        <div class="docs-bar"></div>
+      </div>
+      <div class="docs-upload-actions">
+        <button type="button" class="docs-btn docs-btn-xs docs-cancel">İptal</button>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-card">
+    <div class="docs-card">
+      <div class="docs-card-head">
+        <div class="docs-title"></div>
+        <div class="docs-badges"></div>
+      </div>
+      <div class="docs-desc"></div>
+      <div class="docs-footer">
+        <a class="docs-btn docs-btn-link docs-download" download>İndir</a>
+        <span class="docs-meta-text"></span>
+      </div>
+    </div>
+  </template>
+</div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- Şifre Değiştir Modal -->
+<div id="pwdModal" class="modal">
+  <div class="content">
+    <h3>Şifrenizi Değiştirin</h3>
+    <div class="row" style="margin-top:10px">
+      <input type="password" id="pwCurrent" placeholder="Mevcut şifre"/>
+      <input type="password" id="pwNew" placeholder="Yeni şifre (min 6)"/>
+      <input type="password" id="pwNew2" placeholder="Yeni şifre (tekrar)"/>
+      <button id="pwSave" class="btn">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // === Ayarlar ===
+  const API = "http://localhost:5000";
+  const PROFILE_URL   = `${API}/api/users/profile`;
+  const CHANGE_PW_URL = `${API}/api/auth/change-password`;
+  const DOCUMENTS_URL = `${API}/api/documents`;
+
+  // === Yardımcılar ===
+  const $  = (q)=>document.querySelector(q);
+  const $$ = (q)=>document.querySelectorAll(q);
+  const show      = (el)=>{ if(el) el.hidden = false; };
+  const hide      = (el)=>{ if(el) el.hidden = true;  };
+  const openModal = (el)=>{ if(el) el.style.display="block"; };
+  const closeModal= (el)=>{ if(el) el.style.display="none";  };
+
+  function toInputDate(value){
+    if (!value) return "";
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return "";
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth()+1).padStart(2,"0");
+    const dd = String(d.getDate()).padStart(2,"0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  function bytesToSize(n){
+    if (!n && n !== 0) return "";
+    if (n === 0) return "0 B";
+    const k = 1024, sizes = ["B","KB","MB","GB","TB"];
+    const i = Math.floor(Math.log(n)/Math.log(k));
+    return parseFloat((n/Math.pow(k,i)).toFixed(1)) + " " + sizes[i];
+  }
+
+  // === Token kontrol ===
+  const token = localStorage.getItem("token");
+  if (!token) { location.href = "../login/login.html"; }
+
+  // === Global state (Belgeler) ===
+  let allDocs = [];          // API'den gelen ham liste
+  let currentStatus = null;  // role
+
+  // === PROFİL: çek & doldur ===
+  (async ()=>{
+    try{
+      const res = await fetch(PROFILE_URL, { headers: { Authorization: `Bearer ${token}` }});
+      if(!res.ok) throw new Error("Yetkisiz");
+      const u = await res.json();
+
+      // Üst bar
+      const fullName = `${u.name ?? ""} ${u.surname ?? ""}`.trim();
+      const initials = ((u.name?.[0] || "") + (u.surname?.[0] || "")).toUpperCase() || "•";
+      $("#profileName").textContent = fullName || "—";
+      $("#avatarInitials").textContent = initials;
+      $("#userDept").textContent = u.departman || "-";
+      $("#userStatus").textContent = u.status || "-";
+      currentStatus = u.status || null;
+      window.meId = u._id || u.id;
+      window.meStatus = String(u.role || u.status || "").toLowerCase();
+
+      applyVisibility(currentStatus);
+
+      // Coachmark
+      const seen = localStorage.getItem("profileCoachmarkSeen") === "1";
+      if (!seen) {
+        $("#coachmark").classList.add("show");
+        setTimeout(()=> ($("#coachmark").style.display = "none"), 6000);
+      }
+
+      // Profil form alanları
+      $("#pfFirstName").value  = u.name || "";
+      $("#pfLastName").value   = u.surname || "";
+      $("#pfDepartment").value = u.departman || "";
+      $("#pfStatus").value     = u.status || "";
+      $("#pfBirthDate").value  = toInputDate(u.birthDate);
+      $("#pfAddress").value    = u.address || "";
+      $("#pfPhone").value      = u.phone || "";
+
+      // Hakkımda (localStorage)
+      $("#pfAbout").value = localStorage.getItem("about_me") || "";
+
+    }catch(e){
+      alert("Oturum süresi dolmuş. Lütfen tekrar giriş yapın.");
+      localStorage.removeItem("token");
+      location.href = "../login/login.html";
+    }
+  })();
+
+  // === Sidebar görünürlük ===
+  function applyVisibility(status){
+    $$("[data-roles]").forEach(el=>{
+      const roles = el.getAttribute("data-roles").split(",").map(s=>s.trim());
+      const visible = roles.includes(status) || (status === "superadmin" && roles.includes("admin"));
+      el.style.display = visible ? "" : "none";
+    });
+    $$("[data-statusdetail]").forEach(el=>{
+      const needed = el.getAttribute("data-statusdetail").trim();
+      el.style.display = (needed === status) ? "" : "none";
+    });
+
+    // Belgeler yükleme alanı (yeni ID: #docs-uploader)
+    const up = $("#docs-uploader");
+    if (up) up.hidden = !(status === "admin" || status === "superadmin");
+  }
+
+  // === Sol menü: section göster ===
+  $$("[data-open]").forEach(a=>{
+    a.addEventListener("click",(e)=>{
+      e.preventDefault();
+      const id = a.getAttribute("data-open");
+      $$("main > .card").forEach(sec => hide(sec));
+      const target = document.getElementById(id);
+      if (target) show(target);
+    });
+  });
+
+  // === Çıkış ===
+  $("#logoutBtn").addEventListener("click", ()=>{
+    if (confirm("Çıkış yapmak istiyor musunuz?")){
+      localStorage.removeItem("token");
+      location.href = "../login/login.html";
+    }
+  });
+
+  // === Şifre değiştir ===
+  $("#openPwd")?.addEventListener("click", ()=> openModal($("#pwdModal")));
+  $("#openPwdProfile")?.addEventListener("click", ()=> openModal($("#pwdModal")));
+  $("#pwSave")?.addEventListener("click", async ()=>{
+    const current = $("#pwCurrent")?.value.trim();
+    const n1 = $("#pwNew")?.value.trim();
+    const n2 = $("#pwNew2")?.value.trim();
+    if (!current || !n1) return alert("Alanları doldurun.");
+    if (n1.length < 6)   return alert("Yeni şifre en az 6 karakter olmalı.");
+    if (n1 !== n2)       return alert("Yeni şifreler eşleşmiyor.");
+    try{
+      const r = await fetch(CHANGE_PW_URL,{
+        method:"POST",
+        headers:{ "Content-Type":"application/json", Authorization:`Bearer ${token}` },
+        body: JSON.stringify({ currentPassword: current, newPassword: n1 })
+      });
+      const d = await r.json().catch(()=> ({}));
+      if(!r.ok) return alert(d.message || "Şifre değiştirilemedi.");
+      closeModal($("#pwdModal"));
+      alert("Şifreniz güncellendi.");
+    }catch(err){
+      console.error(err);
+      alert("Sunucuya ulaşılamadı.");
+    }
+  });
+
+  // === Profil kutusu → Profil & Belgeler aç ===
+  function openProfileSection(){
+    $$("main > .card").forEach(sec => hide(sec));
+    show(document.getElementById("profil"));
+    show(document.getElementById("belgelerim"));
+    $("#coachmark").style.display = "none";
+    localStorage.setItem("profileCoachmarkSeen", "1");
+    document.getElementById("profil")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    loadDocuments(); // belgeleri çek
+  }
+  $("#profileBox").addEventListener("click", openProfileSection);
+  $("#profileBox").addEventListener("keydown",(e)=>{
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openProfileSection(); }
+  });
+
+  // Varsayılan: Ana Sayfa açık
+  show($("#home"));
+
+  // === Profil formu kaydet ===
+  $("#profileForm").addEventListener("submit", async (ev)=>{
+    ev.preventDefault();
+    const payload = {};
+    const bd  = $("#pfBirthDate")?.value;
+    const adr = $("#pfAddress")?.value.trim();
+    const tel = $("#pfPhone")?.value.trim();
+    const about = $("#pfAbout")?.value.trim();
+    if (about && about.length > 500) return alert("Hakkımda en fazla 500 karakter.");
+    localStorage.setItem("about_me", about || "");
+    if (bd)  payload.birthDate = bd;
+    if (adr) payload.address   = adr;
+    if (tel) payload.phone     = tel;
+
+    try{
+      const r = await fetch(PROFILE_URL, {
+        method: "PUT",
+        headers: { "Content-Type":"application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(payload)
+      });
+      const d = await r.json().catch(()=> ({}));
+      if (!r.ok) return alert(d.message || "Profil güncellenemedi.");
+      alert("Profiliniz güncellendi.");
+    }catch(err){
+      console.error(err);
+      alert("Sunucuya ulaşılamadı.");
+    }
+  });
+
+  // ================================
+  // =========== BELGELER ===========
+  // ================================
+  const DOCS = {
+    panel:    $("#docs-panel"),
+    uploader: $("#docs-uploader"),
+    dropzone: $("#docs-dropzone"),
+    fileInput:$("#docs-file-input"),
+    browse:   $("#docs-browse"),
+    uploads:  $("#docs-uploads"),
+    list:     $("#docs-list"),
+    tplUpload:$("#tpl-upload-item"),
+    tplCard:  $("#tpl-card"),
+    title:    $("#docs-title"),
+    category: $("#docs-category"),
+    tags:     $("#docs-tags"),
+    desc:     $("#docs-desc"),
+    search:   $("#docs-search"),
+    refresh:  $("#docs-refresh"),
+    toggle:   $("#docs-toggle-upload"),
+  };
+
+  // Belge silme (event delegation)
+  function bindDocDelete(){
+    DOCS.list?.addEventListener("click", async (e)=>{
+      const btn = e.target.closest(".docs-del");
+      if (!btn) return;
+      const id = btn.dataset.id;
+      if (!id) return;
+      if (!confirm("Bu belgeyi silmek istiyor musunuz?")) return;
+      const r = await fetch(`${DOCUMENTS_URL}/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const dj = await r.json().catch(()=> ({}));
+      if (!r.ok) return alert(dj.message || "Silinemedi");
+      // kartı kaldır + listeyi tazele
+      btn.closest(".docs-card")?.remove();
+      loadDocuments();
+    });
+  }
+  bindDocDelete();
+
+
+  // Üst bar: Ara/Yenile/Yükleme toggle
+  DOCS.search?.addEventListener("input", renderList);
+  DOCS.refresh?.addEventListener("click", loadDocuments);
+  DOCS.toggle?.addEventListener("click", ()=>{
+    if (!DOCS.uploader) return;
+    DOCS.uploader.hidden = !DOCS.uploader.hidden;
+  });
+
+  // Pencere genelinde drop'un çalışması için gerekli (Chrome güvenliği)
+  ["dragover","drop"].forEach(ev=>{
+    window.addEventListener(ev, (e)=>{ e.preventDefault(); }, false);
+  });
+
+  // Dropzone olayları
+  if (DOCS.dropzone){
+    ["dragenter","dragover"].forEach(ev=>{
+      DOCS.dropzone.addEventListener(ev, (e)=>{ e.preventDefault(); DOCS.dropzone.classList.add("docs-over"); });
+    });
+    ["dragleave","drop"].forEach(ev=>{
+      DOCS.dropzone.addEventListener(ev, (e)=>{ e.preventDefault(); DOCS.dropzone.classList.remove("docs-over"); });
+    });
+    DOCS.dropzone.addEventListener("drop", (e)=>{
+      const files = e.dataTransfer?.files;
+      if (files?.length) uploadFiles(files);
+    });
+  }
+
+  // “Gözat” butonu
+  DOCS.browse?.addEventListener("click", ()=> DOCS.fileInput?.click());
+  DOCS.fileInput?.addEventListener("change", ()=>{
+    const files = DOCS.fileInput.files;
+    if (files?.length) uploadFiles(files);
+    DOCS.fileInput.value = ""; // aynı dosyayı tekrar seçebilsin
+  });
+
+  // Belgeleri çek
+  async function loadDocuments(){
+    try{
+      DOCS.list.innerHTML = "Yükleniyor...";
+      const r = await fetch(DOCUMENTS_URL, { headers:{ Authorization:`Bearer ${token}` }});
+      const d = await r.json().catch(()=>({ items: [] }));
+      allDocs = d.items || [];
+      renderList();
+    }catch(e){
+      console.error(e);
+      DOCS.list.innerHTML = "Belgeler getirilemedi.";
+    }
+  }
+
+  // Listele (docs kart şablonuyla)
+  function renderList(){
+    if (!DOCS.list) return;
+    const q = (DOCS.search?.value || "").toLowerCase().trim();
+    DOCS.list.innerHTML = "";
+    let items = allDocs;
+    if (q){
+      items = items.filter(d=>{
+        const hay = [
+          d.title, d.category, (d.tags||[]).join(","), d.description, d?.file?.originalName
+        ].join(" ").toLowerCase();
+        return hay.includes(q);
+      });
+    }
+    items.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+
+    if (!items.length){
+      DOCS.list.textContent = q ? "Eşleşen belge yok." : "Henüz belge yok.";
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+    items.forEach(d=>{
+      const node = DOCS.tplCard.content.cloneNode(true);
+      node.querySelector(".docs-title").textContent = d.title || d?.file?.originalName || "Belge";
+
+      // rozetler
+      const badges = node.querySelector(".docs-badges");
+      if (d.category){
+        const b = document.createElement("span"); b.className="b"; b.textContent = d.category; badges.appendChild(b);
+      }
+      if (Array.isArray(d.tags)){
+        d.tags.forEach(t=>{ const b=document.createElement("span"); b.className="b"; b.textContent="#"+t; badges.appendChild(b); });
+      }
+
+      // açıklama
+      node.querySelector(".docs-desc").textContent = d.description || "";
+
+      // indir linki + meta
+      const a = node.querySelector(".docs-download");
+      const fileUrlRel = d?.file?.url || "";
+      const fileUrl = fileUrlRel ? (fileUrlRel.startsWith("http") ? fileUrlRel : API + (fileUrlRel.startsWith("/")?fileUrlRel:("/"+fileUrlRel))) : "#";
+      a.href = fileUrl;
+      a.setAttribute("download", d?.file?.originalName || d.title || "belge");
+
+      const meta = [];
+      if (d?.file?.size) meta.push(bytesToSize(d.file.size));
+      if (d?.file?.mimeType) meta.push(d.file.mimeType);
+      node.querySelector(".docs-meta-text").textContent = meta.join(" • ");
+
+      
+      // Sil butonu (sahibi veya admin/superadmin)
+      (function(){
+        const footer = node.querySelector(".docs-footer");
+        const isOwner = d.owner && String(d.owner) === String(window.meId);
+        const isPriv  = ["admin","superadmin"].includes(String(window.meStatus || currentStatus).toLowerCase());
+        if (isOwner || isPriv) {
+          const delBtn = document.createElement("button");
+          delBtn.type = "button";
+          delBtn.className = "docs-btn docs-btn-ghost docs-del";
+          delBtn.dataset.id = d._id;
+          delBtn.textContent = "Sil";
+          footer.insertBefore(delBtn, footer.querySelector(".docs-meta-text"));
+        }
+      })();
+frag.appendChild(node);
+    });
+    DOCS.list.appendChild(frag);
+  }
+
+  // Çoklu yükleme + progress + iptal
+  function makeUploadRow(file){
+    const row = DOCS.tplUpload.content.cloneNode(true);
+    const el = row.querySelector(".docs-upload-item");
+    el.querySelector(".docs-name").textContent = file.name;
+    el.querySelector(".docs-size").textContent = " • " + bytesToSize(file.size);
+    return {
+      el,
+      bar: el.querySelector(".docs-bar"),
+      cancelBtn: el.querySelector(".docs-cancel")
+    };
+  }
+
+  function uploadFiles(fileList){
+    if (!fileList?.length) return;
+    [...fileList].forEach(file=>{
+      const { el, bar, cancelBtn } = makeUploadRow(file);
+      DOCS.uploads?.prepend(el);
+
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("title", (DOCS.title?.value || "").trim() || file.name);
+      if (DOCS.desc?.value)     fd.append("description", DOCS.desc.value.trim());
+      if (DOCS.category?.value) fd.append("category", DOCS.category.value.trim());
+      if (DOCS.tags?.value)     fd.append("tags", DOCS.tags.value.trim());
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", DOCUMENTS_URL);
+      if (token) xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+
+      xhr.upload.onprogress = (e)=>{
+        if (e.lengthComputable) bar.style.width = Math.round((e.loaded/e.total)*100) + "%";
+      };
+      xhr.onload = async ()=>{
+        if (xhr.status >= 200 && xhr.status < 300){
+          bar.style.width = "100%";
+          setTimeout(()=> el.remove(), 500);
+          await loadDocuments();
+        } else {
+          el.style.background = "rgba(255,0,0,.07)";
+          el.title = `Hata ${xhr.status}`;
+          if (xhr.status === 403 && DOCS.uploader) DOCS.uploader.hidden = true;
+        }
+      };
+      xhr.onerror = ()=>{ el.style.background = "rgba(255,0,0,.07)"; el.title = "Ağ hatası"; };
+
+      cancelBtn.addEventListener("click", ()=>{ try{ xhr.abort(); }catch{} el.remove(); });
+      try { xhr.send(fd); } catch { el.style.background = "rgba(255,0,0,.07)"; }
+    });
+  }
+
+  // Filtre dışındaki eski dinleyiciler kaldırıldı (docSearch/docCategory yoktu)
+
+  // Coachmark kapatma
+  $("#coachmark")?.addEventListener("click", ()=> $("#coachmark").style.display = "none");
+</script>
+</body>
+</html>
